@@ -48,8 +48,20 @@ EOS
   Trollop::die :name, "Must specify a --name for the task" if opts[:days] && !opts[:name]
 
 	return opts
-
 end
+
+
+def load_configuration(filename)
+  config_data = File.open(filename, 'r') { |handle| load = YAML.load(handle) }
+  return config_data
+end
+
+def save_configuration(filename)
+  File.open(filename, "w") do |yaml_file|
+    yaml_file.write(@config.to_yaml)
+  end
+end
+
 
 def main
 	opts = parse_options
