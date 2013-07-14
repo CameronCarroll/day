@@ -62,6 +62,7 @@ def main
     # create new everyday task
   elsif opts[:new] && opts[:name] && opts[:days]
     # create new task for specific days
+  end
 end
 
 main()
