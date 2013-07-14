@@ -45,6 +45,7 @@ EOS
 
 	Trollop::die :days, "Must select --new flag to specify days" if opts[:days] && !opts[:new]
   Trollop::die :name, "Must select --new flag to specify name" if opts[:name] && !opts[:new]
+  Trollop::die :name, "Must specify a --name for the task" if opts[:days] && !opts[:name]
 
 	return opts
 
