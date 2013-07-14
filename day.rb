@@ -36,7 +36,7 @@ Usage:
 
   # day.rb 1 (Start timing task #1)
   # day.rb 2 (Start timing task #2; Stop timing task #1)
-  
+
 EOS
 		opt :new, "Add a new task."
 		opt :name, "Name for new task.", :type => :string
@@ -44,6 +44,7 @@ EOS
 	end
 
 	Trollop::die :days, "Must select --new flag to specify days" if opts[:days] && !opts[:new]
+  Trollop::die :name, "Must select --new flag to specify name" if opts[:name] && !opts[:new]
 
 	return opts
 
