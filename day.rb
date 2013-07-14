@@ -53,16 +53,18 @@ end
 
 
 class DayList
-  attr_accessor :config_data, :config_file_path
+  attr_accessor :config_data, :config_file_path, :tasks
 
   def initialize(config_filename)
     generate_configuration(config_filename) unless File.exists? config_filename
     @config_data = load_configuration(config_filename)
+    @tasks = @config_data['tasks']
   end
 
   def generate_configuration(filename)
     stub_config = {
-      'VERSION' => '0.1.1'
+      'VERSION' => '0.1.1',
+      'tasks' => []
     }
     File.new(filename, "w")
     File.open(filename, "w") do |yaml_file|
@@ -81,13 +83,22 @@ class DayList
     end
   end
 
+  def print
+    puts "Today's tasks:"
+    counter = 1
+    @tasks.each do |task|
+      puts counter + ': ' + task
+      counter = counter + 1
+    end
+  end
+
 end
 
 def main
 	opts = parse_options
   list = DayList.new(CONFIG_FILE)
   if !opts[:new]
-    # print out list of tasks
+    list.print
   elsif opts[:new] && !opts[:name] && !opts[:days]
     # call new task wizard
   elsif opts[:new] && opts[:name] && !opts[:days]
