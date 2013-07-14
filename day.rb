@@ -11,6 +11,7 @@ require 'trollop'
 require 'pry'
 
 VERSION = '0.1.1'
+CONFIG_FILE = ENV['HOME'] + '/.TODO'
 
 def parse_options
 	opts = Trollop::options do
@@ -51,21 +52,40 @@ EOS
 end
 
 
-def load_configuration(filename)
-  config_data = File.open(filename, 'r') { |handle| load = YAML.load(handle) }
-  return config_data
-end
+class DayList
+  attr_accessor :config_data, :config_file_path
 
-def save_configuration(filename)
-  File.open(filename, "w") do |yaml_file|
-    yaml_file.write(@config.to_yaml)
+  def initialize(config_filename)
+    generate_configuration(config_filename) unless File.exists? config_filename
+    @config_data = load_configuration(config_filename)
   end
-end
 
+  def generate_configuration(filename)
+    stub_config = {
+      'VERSION' => '0.1.1'
+    }
+    File.new(filename, "w")
+    File.open(filename, "w") do |yaml_file|
+      yaml_file.write(stub_config.to_yaml)
+    end
+  end
+
+  def load_configuration(filename)
+    config_data = File.open(filename, 'r') { |handle| load = YAML.load(handle) }
+    return config_data
+  end
+
+  def save_configuration(filename)
+    File.open(filename, "w") do |yaml_file|
+      yaml_file.write(@config.to_yaml)
+    end
+  end
+
+end
 
 def main
 	opts = parse_options
-
+  list = DayList.new(CONFIG_FILE)
   if !opts[:new]
     # print out list of tasks
   elsif opts[:new] && !opts[:name] && !opts[:days]
