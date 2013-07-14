@@ -52,6 +52,15 @@ end
 
 def main
 	opts = parse_options
+
+  if !opts[:new]
+    # print out list of tasks
+  elsif opts[:new] && !opts[:name] && !opts[:days]
+    # call new task wizard
+  elsif opts[:new] && opts[:name] && !opts[:days]
+    # create new everyday task
+  elsif opts[:new] && opts[:name] && opts[:days]
+    # create new task for specific days
 end
 
 main()
