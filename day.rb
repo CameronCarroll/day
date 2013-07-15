@@ -12,6 +12,7 @@ require 'pry'
 
 VERSION = '0.1.1'
 CONFIG_FILE = ENV['HOME'] + '/.TODO'
+HISTORY_FILE = ENV['HOME'] + '/.TODO_HISTORY'
 
 def parse_options
 	opts = Trollop::options do
@@ -53,11 +54,13 @@ end
 
 
 class DayList
-  attr_accessor :config_data, :config_file_path
+  attr_accessor :config_data, :history_data, :config_path, :history_path, :current_context  ,
+                :context_entrance_time
 
-  def initialize(config_filename)
-    generate_configuration(config_filename) unless File.exists? config_filename
-    @config_data = load_configuration(config_filename)
+  def initialize(config_filename, config_history_filename)
+    @config_path = config_filename
+    generate_configuration(@config_path) unless File.exists? @config_path
+    @config_data = load_configuration(@config_path)
   end
 
   def generate_configuration(filename)
@@ -76,9 +79,9 @@ class DayList
     return config_data
   end
 
-  def save_configuration(filename)
+  def save_configuration(data, filename)
     File.open(filename, "w") do |yaml_file|
-      yaml_file.write(@config_data.to_yaml)
+      yaml_file.write(data.to_yaml)
     end
   end
 
@@ -94,15 +97,19 @@ class DayList
   def create_task(name, days)
     puts @config_data
     @config_data['tasks'] << { :name => name, :days => days}
-    self.save_configuration(CONFIG_FILE)
+    self.save_configuration(@config, @config_path)
+  end
+
+  def enter_context(numeric_selection)
+
   end
 
 end
 
 def main
 	opts = parse_options
-  list = DayList.new(CONFIG_FILE)
-  if !opts[:new]
+  list = DayList.new(CONFIG_FILE, HISTORY_FILE)
+  if !opts[:new] && ARGV.empty?
     list.print
   elsif opts[:new] && !opts[:name] && !opts[:days]
     # call new task wizard
