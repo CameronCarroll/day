@@ -117,7 +117,19 @@ def main
     list.create_task(opts[:name], nil)
   elsif opts[:new] && opts[:name] && opts[:days]
     list.create_task(opts[:name], opts[:days])
+  else
+    if ARGV.first.numeric?
+      list.enter_context(ARGV.first)
+    else
+      list.create_task(ARGV.first, nil)
+    end
   end
+end
+
+class String
+  def numeric?
+       !!(self =~ /^[-+]?[0-9]+$/)
+    end
 end
 
 main()
