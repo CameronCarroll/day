@@ -53,12 +53,11 @@ end
 
 
 class DayList
-  attr_accessor :config_data, :config_file_path, :tasks
+  attr_accessor :config_data, :config_file_path
 
   def initialize(config_filename)
     generate_configuration(config_filename) unless File.exists? config_filename
     @config_data = load_configuration(config_filename)
-    @tasks = @config_data['tasks']
   end
 
   def generate_configuration(filename)
@@ -79,17 +78,23 @@ class DayList
 
   def save_configuration(filename)
     File.open(filename, "w") do |yaml_file|
-      yaml_file.write(@config.to_yaml)
+      yaml_file.write(@config_data.to_yaml)
     end
   end
 
   def print
-    puts "Today's tasks:"
-    counter = 1
-    @tasks.each do |task|
-      puts counter + ': ' + task
+    puts "Tasks:"
+    counter = 0
+    @config_data['tasks'].each do |task|
+      puts counter.to_s + ': ' + task[:name]
       counter = counter + 1
     end
+  end
+
+  def create_task(name, days)
+    puts @config_data
+    @config_data['tasks'] << { :name => name, :days => days}
+    self.save_configuration(CONFIG_FILE)
   end
 
 end
@@ -102,9 +107,9 @@ def main
   elsif opts[:new] && !opts[:name] && !opts[:days]
     # call new task wizard
   elsif opts[:new] && opts[:name] && !opts[:days]
-    # create new everyday task
+    list.create_task(opts[:name], nil)
   elsif opts[:new] && opts[:name] && opts[:days]
-    # create new task for specific days
+    list.create_task(opts[:name], opts[:days])
   end
 end
 
