@@ -127,13 +127,33 @@ class DayList
 
   def create_task(name, days)
     puts @config_data
-    @config_data['tasks'] << { :name => name, :days => days}
+    @config_data[:tasks] << { :name => name, :days => days}
     self.save_configuration
   end
 
-  def enter_context(numeric_selection)
-
+  def find_task_name(numeric_selection)
+    if @config_data[:tasks][numeric_selection.to_i]
+      return @config_data[:tasks][numeric_selection.to_i][:name]
+    else
+      return nil
+    end
   end
+
+  def enter_context(numeric_selection)
+    leave_context if @current_context
+    @current_context = numeric_selection
+    @context_entrance_time = Time.now.getutc
+    self.save_configuration
+  end
+
+  def leave_context
+    task_name = find_task_name(@current_context)
+    @history_data[:task_history][task_name] = Array.new unless @history_data[:task_history].has_key? @current_context
+    @history_data[:task_history][task_name] << [@context_entrance_time, Time.now.getutc]
+    binding.pry
+    save_history
+    @current_context, @context_entrance_time = nil, nil
+  end 
 
 end
 
