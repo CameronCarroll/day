@@ -69,6 +69,7 @@ class DayList
   end
 
   def generate_configuration
+    puts "[NOTICE] Couldn't find config file (~/.TODO) -- Generating a new one."
     stub_config = {
       :version => VERSION,
       :tasks => []
@@ -77,11 +78,10 @@ class DayList
   end
 
   def generate_history
+    puts "[NOTICE] Couldn't find history file (~/.TODO_HISTORY) -- Generating a new one."
     stub_history = {
       :VERSION => VERSION,
-      :task_history => {
-
-      }
+      :task_history => {}
     }
     save_yaml_data(stub_history, @history_path)
   end
@@ -117,16 +117,20 @@ class DayList
   end
 
   def print
-    puts "Tasks:"
+    puts ""
+    puts "Day:"
     counter = 0
     @config_data[:tasks].each do |task|
       puts counter.to_s + ': ' + task[:name]
       counter = counter + 1
     end
+    puts ""
+    puts "Current Context: " + find_task_name(@current_context) if @current_context
+    puts ""
   end
 
   def create_task(name, days)
-    puts @config_data
+    puts "Adding new task: #{name}" 
     @config_data[:tasks] << { :name => name, :days => days}
     self.save_configuration
   end
@@ -158,6 +162,7 @@ class DayList
 end
 
 def main
+  puts ""
 	opts = parse_options
   list = DayList.new(CONFIG_FILE, HISTORY_FILE)
   if !opts[:new] && ARGV.empty?
@@ -171,12 +176,15 @@ def main
   else
     if ARGV.first.numeric?
       if ARGV.first == list.current_context
+        puts "Leave context: " + list.find_task_name(ARGV.first)
         list.leave_context
       else
         if list.config_data[:tasks].size-1 >= ARGV.first.to_i
+          puts "Enter context: " + list.find_task_name(ARGV.first)
           list.enter_context(ARGV.first)
         else
-          puts "invalid selection"
+          puts "Invalid selection..."
+          list.print
         end
       end
       
