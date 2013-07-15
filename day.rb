@@ -59,27 +59,56 @@ class DayList
 
   def initialize(config_filename, config_history_filename)
     @config_path = config_filename
-    generate_configuration(@config_path) unless File.exists? @config_path
-    @config_data = load_configuration(@config_path)
+    @history_path = config_history_filename
+    generate_configuration unless File.exists? @config_path
+    generate_history unless File.exists? @history_path
+    @config_data = load_configuration
+    @history_data = load_history
   end
 
-  def generate_configuration(filename)
+  def generate_configuration
     stub_config = {
-      'VERSION' => '0.1.1',
+      'VERSION' => VERSION,
       'tasks' => []
     }
-    File.new(filename, "w")
-    File.open(filename, "w") do |yaml_file|
-      yaml_file.write(stub_config.to_yaml)
-    end
+    save_yaml_data(stub_config, @config_path)
   end
 
-  def load_configuration(filename)
+  def generate_history
+    stub_history = {
+      :VERSION => VERSION,
+      :task_history => [
+
+      ]
+    }
+    save_yaml_data(stub_history, @history_path)
+  end
+
+  def load_history
+    load_yaml_data(@history_path)
+  end
+
+  def save_history
+    save_yaml_data(@history_data)
+  end
+
+  def load_configuration
+    load_yaml_data(@config_path)
+  end
+
+  def save_configuration
+    @config_data[:current_context] = @current_context
+    @config_data[:context_entrance_time] = @context_entrance_time
+    save_yaml_data(@config_data, @config_path)
+  end
+
+  def load_yaml_data(filename)
     config_data = File.open(filename, 'r') { |handle| load = YAML.load(handle) }
     return config_data
   end
 
-  def save_configuration(data, filename)
+  def save_yaml_data(data, filename)
+    File.new(filename, "w") unless File.exist? filename
     File.open(filename, "w") do |yaml_file|
       yaml_file.write(data.to_yaml)
     end
@@ -97,7 +126,7 @@ class DayList
   def create_task(name, days)
     puts @config_data
     @config_data['tasks'] << { :name => name, :days => days}
-    self.save_configuration(@config, @config_path)
+    self.save_configuration
   end
 
   def enter_context(numeric_selection)
