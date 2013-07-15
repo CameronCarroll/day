@@ -148,11 +148,11 @@ class DayList
 
   def leave_context
     task_name = find_task_name(@current_context)
-    @history_data[:task_history][task_name] = Array.new unless @history_data[:task_history].has_key? @current_context
+    @history_data[:task_history][task_name] = Array.new unless @history_data[:task_history][task_name]
     @history_data[:task_history][task_name] << [@context_entrance_time, Time.now.getutc]
-    binding.pry
-    save_history
     @current_context, @context_entrance_time = nil, nil
+    save_history
+    save_configuration
   end 
 
 end
@@ -170,7 +170,16 @@ def main
     list.create_task(opts[:name], opts[:days])
   else
     if ARGV.first.numeric?
-      list.enter_context(ARGV.first)
+      if ARGV.first == list.current_context
+        list.leave_context
+      else
+        if list.config_data[:tasks].size-1 >= ARGV.first.to_i
+          list.enter_context(ARGV.first)
+        else
+          puts "invalid selection"
+        end
+      end
+      
     else
       list.create_task(ARGV.first, nil)
     end
