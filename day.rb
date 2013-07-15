@@ -63,13 +63,15 @@ class DayList
     generate_configuration unless File.exists? @config_path
     generate_history unless File.exists? @history_path
     @config_data = load_configuration
+    @current_context = @config_data[:current_context]
+    @context_entrance_time = @config_data[:context_entrance_time]
     @history_data = load_history
   end
 
   def generate_configuration
     stub_config = {
-      'VERSION' => VERSION,
-      'tasks' => []
+      :version => VERSION,
+      :tasks => []
     }
     save_yaml_data(stub_config, @config_path)
   end
@@ -77,9 +79,9 @@ class DayList
   def generate_history
     stub_history = {
       :VERSION => VERSION,
-      :task_history => [
+      :task_history => {
 
-      ]
+      }
     }
     save_yaml_data(stub_history, @history_path)
   end
@@ -89,7 +91,7 @@ class DayList
   end
 
   def save_history
-    save_yaml_data(@history_data)
+    save_yaml_data(@history_data, @history_path)
   end
 
   def load_configuration
@@ -117,7 +119,7 @@ class DayList
   def print
     puts "Tasks:"
     counter = 0
-    @config_data['tasks'].each do |task|
+    @config_data[:tasks].each do |task|
       puts counter.to_s + ': ' + task[:name]
       counter = counter + 1
     end
