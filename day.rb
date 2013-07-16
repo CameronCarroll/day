@@ -38,16 +38,18 @@ Usage:
   # day.rb 1 -- Switch context and save time spent in previous context.
   # day.rb 1 -- Exit context, save times.
 
+  #day.rb new_task3 m w thu -- Create new_task3 for monday, wednesday and thursday.
+
   Notes:
 
-  # Days of the week can either be defined as individual letters, digraphs,
-    where necessary, or trigraphs where desired.
-    ie: m, t, w, th, f, sa, su
+  # Days of the week can either be defined as individual letters and digraphs,
+    where necessary, or trigraphs where desired. Must be given as a list of lowercase keys.
+    ie: m, tu, w, th, f, sa, su
     You could also use the internal representation, where 0 corresponds to sunday and 6 to saturday.
 
   # When using day.rb <noun>, integer numerical input will switch context,
     while alphanumeric input will create a new task.
-      
+
 EOS
 		opt :new, "Add a new task."
 		opt :name, "Name for new task.", :type => :string
@@ -64,7 +66,7 @@ end
 
 class DayList
   attr_accessor :config_data, :history_data, :config_path, :history_path, :current_context  ,
-                :context_entrance_time
+                :context_entrance_time, :valid_tasks
 
   def initialize(config_filename, config_history_filename)
     @config_path = config_filename
@@ -72,6 +74,7 @@ class DayList
     generate_configuration unless File.exists? @config_path
     generate_history unless File.exists? @history_path
     @config_data = load_configuration
+    @valid_tasks = load_valid_tasks
     @current_context = @config_data[:current_context]
     @context_entrance_time = @config_data[:context_entrance_time]
     @history_data = load_history
@@ -84,6 +87,55 @@ class DayList
       :tasks => []
     }
     save_yaml_data(stub_config, @config_path)
+  end
+
+  def load_valid_tasks
+    valid_tasks = []
+    unless @config_data[:tasks].empty?
+      @config_data[:tasks].each do |task|
+        valid_tasks << task if valid_task? task
+      end
+    end
+
+    puts valid_tasks
+
+    return valid_tasks
+  end
+
+  def valid_task?(task)
+    if task[:days]
+      today = Time.new.wday #0 is sunday, 6 saturday
+
+      weekday_short = case today
+        when 0 then 'su'
+        when 1 then 'm'
+        when 2 then 'tu'
+        when 3 then 'w'
+        when 4 then 'th'
+        when 5 then 'f'
+        when 6 then 'sa'
+      end
+
+      weekday_long = case today
+        when 0 then 'sun'
+        when 1 then 'mon'
+        when 2 then 'tue'
+        when 3 then 'wed'
+        when 4 then 'thu'
+        when 5 then 'fri'
+        when 6 then 'sat'
+      end
+
+      if task[:days].include?(today) || task[:days].include?(weekday_short)
+        return true
+      elsif task[:days].include? weekday_long || task[:days].empty?
+        return true
+      else
+        return false
+      end 
+    else
+      return true
+    end
   end
 
   def generate_history
@@ -129,7 +181,7 @@ class DayList
     puts ""
     puts "Day:"
     counter = 0
-    @config_data[:tasks].each do |task|
+    @valid_tasks.each do |task|
       puts counter.to_s + ': ' + task[:name]
       counter = counter + 1
     end
@@ -145,8 +197,8 @@ class DayList
   end
 
   def find_task_name(numeric_selection)
-    if @config_data[:tasks][numeric_selection.to_i]
-      return @config_data[:tasks][numeric_selection.to_i][:name]
+    if @valid_tasks[numeric_selection.to_i]
+      return @valid_tasks[numeric_selection.to_i][:name]
     else
       return nil
     end
