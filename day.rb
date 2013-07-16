@@ -97,8 +97,6 @@ class DayList
       end
     end
 
-    puts valid_tasks
-
     return valid_tasks
   end
 
@@ -186,8 +184,16 @@ class DayList
       counter = counter + 1
     end
     puts ""
-    puts "Current Context: " + find_task_name(@current_context) if @current_context
+    if @current_context
+      puts "Current Context: " + find_task_name(@current_context)
+      print_context_time
+    end
     puts ""
+  end
+
+  def print_context_time
+    time = "%0.2f" % ((Time.new.getutc - @context_entrance_time) / 60)
+    puts "Time spent in context: " + time.to_s + " minutes."
   end
 
   def create_task(name, days)
@@ -212,6 +218,7 @@ class DayList
   end
 
   def leave_context
+    print_context_time
     task_name = find_task_name(@current_context)
     @history_data[:task_history][task_name] = Array.new unless @history_data[:task_history][task_name]
     @history_data[:task_history][task_name] << [@context_entrance_time, Time.now.getutc]
