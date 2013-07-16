@@ -20,19 +20,14 @@ def parse_options
 		banner <<-EOS
 
 day.rb is a time-tracking/to-do app. It allows tasks to be defined for certain days, or everyday.
-Simply select a task to begin timing it, and run the same command again to stop.
-day.rb is intended to help keep you organized, and allow quick and unobtrusive context switching.
+It is intended to help keep you organized, and allow quick and unobtrusive context switching.
+
 
 Usage:
 
+  Simply select a task to begin timing it, and run the same command again to stop.
+
   day.rb [options] [task number]
-
-  Note: Days of the week can either be defined as individual letters, digraphs,
-        where necessary, or trigraphs where desired.
-  You could also use the internal representation, where 0 corresponds to sunday and 6 to saturday.
-
-  Note: When using day.rb <noun>, integer numerical input will switch context,
-        while alphanumeric input will create a new task.
 
   Examples:
 
@@ -43,6 +38,16 @@ Usage:
   # day.rb 1 -- Switch context and save time spent in previous context.
   # day.rb 1 -- Exit context, save times.
 
+  Notes:
+
+  # Days of the week can either be defined as individual letters, digraphs,
+    where necessary, or trigraphs where desired.
+    ie: m, t, w, th, f, sa, su
+    You could also use the internal representation, where 0 corresponds to sunday and 6 to saturday.
+
+  # When using day.rb <noun>, integer numerical input will switch context,
+    while alphanumeric input will create a new task.
+      
 EOS
 		opt :new, "Add a new task."
 		opt :name, "Name for new task.", :type => :string
