@@ -10,7 +10,7 @@ require 'bundler/setup'
 require 'trollop'
 require 'yaml'
 
-VERSION = '0.2'
+VERSION = '0.3'
 CONFIG_FILE = ENV['HOME'] + '/.DAYTODO'
 HISTORY_FILE = ENV['HOME'] + '/.DAYTODO_HISTORY'
 
