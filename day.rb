@@ -8,7 +8,7 @@ require 'rubygems'
 require 'bundler/setup'
 
 require 'trollop'
-require 'pry'
+require 'yaml'
 
 VERSION = '0.2'
 CONFIG_FILE = ENV['HOME'] + '/.TODO'
