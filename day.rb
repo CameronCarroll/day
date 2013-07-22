@@ -11,8 +11,8 @@ require 'trollop'
 require 'yaml'
 
 VERSION = '0.2'
-CONFIG_FILE = ENV['HOME'] + '/.TODO'
-HISTORY_FILE = ENV['HOME'] + '/.TODO_HISTORY'
+CONFIG_FILE = ENV['HOME'] + '/.DAYTODO'
+HISTORY_FILE = ENV['HOME'] + '/.DAYTODO_HISTORY'
 
 def parse_options
 	opts = Trollop::options do
@@ -165,6 +165,7 @@ class DayList
 
   def load_yaml_data(filename)
     config_data = File.open(filename, 'r') { |handle| load = YAML.load(handle) }
+    config_data = {} unless config_data
     return config_data
   end
 
