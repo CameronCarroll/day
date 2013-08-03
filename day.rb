@@ -11,8 +11,8 @@ require 'trollop'
 require 'yaml'
 
 VERSION = '0.3'
-CONFIG_FILE = ENV['HOME'] + '/.DAYTODO'
-HISTORY_FILE = ENV['HOME'] + '/.DAYTODO_HISTORY'
+CONFIG_FILE = ENV['HOME'] + '/.app_data/.daytodo'
+HISTORY_FILE = ENV['HOME'] + '/.app_data/.daytodo_history'
 
 def parse_options
 	opts = Trollop::options do
@@ -71,6 +71,7 @@ class DayList
   def initialize(config_filename, config_history_filename)
     @config_path = config_filename
     @history_path = config_history_filename
+    FileUtils.mkdir_p(File.dirname(@config_path))
     generate_configuration unless File.exists? @config_path
     generate_history unless File.exists? @history_path
     @config_data = load_configuration
@@ -78,6 +79,15 @@ class DayList
     @current_context = @config_data[:current_context]
     @context_entrance_time = @config_data[:context_entrance_time]
     @history_data = load_history
+  end
+
+  def generate_history
+    puts "[NOTICE] Couldn't find history file (~/.TODO_HISTORY) -- Generating a new one."
+    stub_history = {
+      :VERSION => VERSION,
+      :task_history => {}
+    }
+    save_yaml_data(stub_history, @history_path)
   end
 
   def generate_configuration
@@ -136,14 +146,7 @@ class DayList
     end
   end
 
-  def generate_history
-    puts "[NOTICE] Couldn't find history file (~/.TODO_HISTORY) -- Generating a new one."
-    stub_history = {
-      :VERSION => VERSION,
-      :task_history => {}
-    }
-    save_yaml_data(stub_history, @history_path)
-  end
+
 
   def load_history
     load_yaml_data(@history_path)
