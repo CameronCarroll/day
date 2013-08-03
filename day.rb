@@ -9,6 +9,7 @@ require 'bundler/setup'
 
 require 'trollop'
 require 'yaml'
+require 'fileutils'
 
 VERSION = '0.3'
 CONFIG_FILE = ENV['HOME'] + '/.app_data/.daytodo'
