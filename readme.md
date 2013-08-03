@@ -49,3 +49,7 @@ Simply select a task to begin timing it, and run the same command again to stop.
 
   # When using day.rb <noun>, integer numerical input will switch context,
     while alphanumeric input will create a new task.
+
+
+Copyright 2013 - Cameron Carroll
+License: GNU GPL V3
