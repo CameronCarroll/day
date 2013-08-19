@@ -119,7 +119,6 @@ class BaseConfig
   private
 
   def generate
-    binding.pry
     puts "[Notice:] Couldn't find '#{@file_path}' -- Generating a new one."
     stub = {
       :version => VERSION,
@@ -154,7 +153,6 @@ class Configuration < BaseConfig
     super
     @tasks = []
     unless @data[:tasks].empty?
-      binding.pry
       @data[:tasks].each do |task|
         task_object = Task.new(task.first, task[1][:days], task[1][:commitment])
         @tasks << task_object
@@ -164,7 +162,6 @@ class Configuration < BaseConfig
 
   def save_task(task, valid_days, time_commitment)
     @data[:tasks][task] = {:days => valid_days, :commitment => time_commitment}
-    binding.pry
     save(data)
   end
 end
@@ -307,13 +304,14 @@ def main
   # Generate list from configuration data:
   list = List.new(config_data[:tasks], config_data[:current_context], config_data[:context_entrance_time]);
 
-
+  binding.pry
   # Handle behaviors:
   if opts[:print]
     puts 'print'
   elsif opts[:chosen_context]
     puts 'context switch'
   elsif opts[:new_task]
+    raise ArgumentError, "Duplicate task." if config_data[:tasks].keys.include? opts[:new_task]
     if opts[:valid_days]
       valid_days = parse_day_keys(opts)
     else
