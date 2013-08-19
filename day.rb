@@ -37,6 +37,7 @@ class List
       task_list.each do |task|
         #task.first refers to the key (task name), since the task is stored [key, val]
         task_instance = Task.new(task.first, task[1][:days], task[1][:commitment])
+        @tasks[task_instance.name] = task_instance
       end
     end
 
@@ -47,6 +48,14 @@ class List
   def addTask(name, days, commitment)
     this_task = Task.new(name, days, commitment)
     @tasks[name] = this_task
+  end
+
+  def print
+    ii = 0
+    @tasks.each do |key, value|
+      puts ii.to_s + ': ' + key
+      ii = ii + 1
+    end
   end
 end
 
@@ -307,7 +316,7 @@ def main
   binding.pry
   # Handle behaviors:
   if opts[:print]
-    puts 'print'
+    list.print
   elsif opts[:chosen_context]
     puts 'context switch'
   elsif opts[:new_task]
