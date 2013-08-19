@@ -207,13 +207,13 @@ def parse_options
       if arg.nan?
         key = parse_day_argument(arg)
         if opts[key]
-          raise 'Cannot specify a single day more than one time!'
+          raise ArgumentError, 'Cannot specify a single day more than one time!'
         else
           opts[key] = true
         end
       else
         if opts[:time]
-          raise 'Can only supply one numerical argument corresponding to commitment time!'
+          raise ArgumentError, 'Can only supply one numerical argument corresponding to commitment time!'
         else
           opts[:time] = arg
         end
@@ -226,28 +226,28 @@ def parse_options
   if opts[:commit]
     # Check for new task definition.
     # Check that ARG 1 exists and that it is NOT numeric.
-    task_missing_error = "Must supply task name after 'commit' keyword. (i.e. 'day commit read_hn 0.5')"
+    name_error_msg = "Must supply task name after 'commit' keyword. (i.e. 'day commit read_hn 0.5')"
     if ARGV[1]
       if ARGV[1].nan?
         opts[:task_name] = ARGV[1]
       else
-        raise task_missing_error
+        raise ArgumentError, error_msg
       end
     else
-      raise task_missing_error
+      raise ArgumentError, error_msg
     end
 
     # Check for time commitment definition.
     # Check that ARG 2 exists and that it IS numeric.
-    time_missing_error = "Must supply expected time commitment after task name. (i.e. 'day commit read_hn 0.5')"
+    time_error_msg = "Must supply expected time commitment after task name. (i.e. 'day commit read_hn 0.5')"
     if ARGV[2]
       if ARGV[2].nan?
-        raise time_missing_error
+        raise ArgumentError, time_error_msg
       else
         opts[:time_commitment] = ARGV[2]
       end
     else
-      raise time_missing_error
+      raise ArgumentError, time_error_msg
     end
   end
 
@@ -271,7 +271,7 @@ def parse_day_argument(day)
   when 'sa', 'sat', 'satu', 'satur', 'saturday', '6'
     return :saturday
   else
-    raise 'Could not parse day argument! Check your day glyphs.'
+    raise ArgumentError, 'Could not parse day argument! Check your day glyphs.'
   end
 end
 
@@ -322,7 +322,7 @@ def main
   elsif opts[:commit]
     puts 'commitment'
   else
-    raise "No behavior defined! Check options parsing. "
+    raise ArgumentError, "No behavior defined! Check options parsing. "
   end
 end
 
