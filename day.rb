@@ -45,22 +45,23 @@ class List
     @context_entrance_time = context_entrance_time if context_entrance_time
   end
 
-  def print
+  def printout
     puts "Day.rb (#{VERSION})"
     puts "Today's tasks:"
     puts ""
     ii = 0
     @tasks.each_with_index do |task, ii|
-      puts ii.to_s + ': ' + task.name
+      print ii.to_s + ': ' + task.name
+      if task.fulfillment && task.time_commitment
+        diff = task.fulfillment.to_f / task.time_commitment.to_f * 100
+        puts " [#{'%2.2f' % diff}%]"
+      else
+        print "\n"
+      end
     end
   end
 
   def switch(config, histclass, context_number)
-
-    # Not sure this belongs here...
-    # Commitment fulfillment stuff
-    binding.pry
-
 
     if @tasks.empty?
       raise RuntimeError, "No tasks are defined."
@@ -78,7 +79,7 @@ class List
     if @current_context == context_number
       current_task = find_task_by_number(@current_context)
       puts "Exit Context: " + current_task.name
-      time_difference = Time.now.getutc - @context_entrance_time
+      time_difference = (Time.now.getutc - @context_entrance_time) / 60
       config.update_fulfillment(current_task.name, time_difference)
       print_time(time_difference)
       histclass.save_history(current_task.name, @context_entrance_time, Time.now.getutc)
@@ -89,7 +90,7 @@ class List
     if @current_context && @context_entrance_time
       current_task = find_task_by_number(@current_context)
       puts "Exit context: " + current_task.name
-      time_difference = Time.now.getutc - @context_entrance_time
+      time_difference = (Time.now.getutc - @context_entrance_time) / 60
       print_time(time_difference)
       config.update_fulfillment(current_task.name, time_difference)
       puts "Enter context: " + find_task_by_number(context_number).name
@@ -243,7 +244,6 @@ class Configuration < BaseConfig
   def update_fulfillment(task_name, time)
     @data[:tasks][task_name][:fulfillment] ||= 0
     @data[:tasks][task_name][:fulfillment] += time.to_f
-    binding.pry
     save(@data)
   end
 end
@@ -395,7 +395,7 @@ def main
 
   # Handle behaviors:
   if opts[:print]
-    list.print
+    list.printout
   elsif opts[:chosen_context]
     list.switch(config, histclass, opts[:chosen_context])
   elsif opts[:new_task]
