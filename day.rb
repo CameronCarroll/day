@@ -66,25 +66,32 @@ class List
     end
 
     unless @current_context
-      puts 'didnt find a context, switching to new one'
+      puts "Enter context: " + find_task_by_number(context_number).name
       config.save_context_switch(context_number)
     end
 
     if @current_context == context_number
-      puts 'found a context to exit, but not switching to a new one.'
       current_task = find_task_by_number(@current_context)
+      puts "Exit Context: " + current_task.name
+      print_time(@context_entrance_time, Time.now.getutc)
       histclass.save_history(current_task.name, @context_entrance_time, Time.now.getutc)
       config.clear_current_context
       return
     end
 
     if @current_context && @context_entrance_time
-      puts 'found a context, saving history and switching to new one.'
       current_task = find_task_by_number(@current_context)
+      puts "Exit context: " + current_task.name
+      print_time(@context_entrance_time, Time.now.getutc)
+      puts "Enter context: " + find_task_by_number(context_number).name
       histclass.save_history(current_task.name, @context_entrance_time, Time.now.getutc)
       config.clear_current_context
       config.save_context_switch(context_number)
     end
+  end
+
+  def print_time(start_time, end_time)
+    puts "Time: " + ('%.2f' % ((end_time - start_time) / 60)).to_s
   end
 
   def find_task_by_number(numeric_selection)
