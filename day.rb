@@ -12,7 +12,7 @@ require 'yaml'
 require 'fileutils'
 require 'pry'
 
-VERSION = '0.91'
+VERSION = '0.92'
 CONFIG_FILE = ENV['HOME'] + '/.app_data/.daytodo'
 HISTORY_FILE = ENV['HOME'] + '/.app_data/.daytodo_history'
 
@@ -36,7 +36,7 @@ class List
     if task_list
       task_list.each do |task|
         #task.first refers to the key (task name), since the task is stored [key, val]
-        task_instance = Task.new(task.first, task[1][:days], task[1][:commitment])
+        task_instance = Task.new(task.first, task[1][:days], task[1][:commitment], task[1][:fulfillment])
         @tasks << task_instance
       end
     end
@@ -57,6 +57,11 @@ class List
 
   def switch(config, histclass, context_number)
 
+    # Not sure this belongs here...
+    # Commitment fulfillment stuff
+    binding.pry
+
+
     if @tasks.empty?
       raise RuntimeError, "No tasks are defined."
     end
@@ -73,7 +78,9 @@ class List
     if @current_context == context_number
       current_task = find_task_by_number(@current_context)
       puts "Exit Context: " + current_task.name
-      print_time(@context_entrance_time, Time.now.getutc)
+      time_difference = Time.now.getutc - @context_entrance_time
+      config.update_fulfillment(current_task.name, time_difference)
+      print_time(time_difference)
       histclass.save_history(current_task.name, @context_entrance_time, Time.now.getutc)
       config.clear_current_context
       return
@@ -82,7 +89,9 @@ class List
     if @current_context && @context_entrance_time
       current_task = find_task_by_number(@current_context)
       puts "Exit context: " + current_task.name
-      print_time(@context_entrance_time, Time.now.getutc)
+      time_difference = Time.now.getutc - @context_entrance_time
+      print_time(time_difference)
+      config.update_fulfillment(current_task.name, time_difference)
       puts "Enter context: " + find_task_by_number(context_number).name
       histclass.save_history(current_task.name, @context_entrance_time, Time.now.getutc)
       config.clear_current_context
@@ -90,8 +99,8 @@ class List
     end
   end
 
-  def print_time(start_time, end_time)
-    puts "Time: " + ('%.2f' % ((end_time - start_time) / 60)).to_s
+  def print_time(time_difference)
+    puts "Time: " + ('%.2f' % (time_difference / 60)).to_s
   end
 
   def find_task_by_number(numeric_selection)
@@ -105,12 +114,13 @@ end
 
 class Task
 
-  attr_reader :name, :valid_days, :time_commitment
+  attr_reader :name, :valid_days, :time_commitment, :fulfillment
 
-  def initialize(name, valid_days, time_commitment)
+  def initialize(name, valid_days, time_commitment, fulfillment)
     @name = name
     @valid_days = valid_days
     @time_commitment = time_commitment
+    @fulfillment = fulfillment
   end
 
   def self.valid_today?
@@ -207,14 +217,15 @@ class Configuration < BaseConfig
     @tasks = []
     unless @data[:tasks].empty?
       @data[:tasks].each do |task|
-        task_object = Task.new(task.first, task[1][:days], task[1][:commitment])
+        task_object = Task.new(task.first, task[1][:days], task[1][:commitment], task[1][:fulfillment])
         @tasks << task_object
       end
     end
   end
 
-  def save_task(task, valid_days, time_commitment)
-    @data[:tasks][task] = {:days => valid_days, :commitment => time_commitment}
+  def save_task(task, valid_days, time_commitment, fulfillment)
+    puts "Creating new task: " + task
+    @data[:tasks][task] = {:days => valid_days, :commitment => time_commitment, :fulfillment => fulfillment}
     save(data)
   end
 
@@ -226,6 +237,13 @@ class Configuration < BaseConfig
 
   def clear_current_context()
     @data[:current_context], @data[:context_entrance_time] = nil, nil
+    save(@data)
+  end
+
+  def update_fulfillment(task_name, time)
+    @data[:tasks][task_name][:fulfillment] ||= 0
+    @data[:tasks][task_name][:fulfillment] += time.to_f
+    binding.pry
     save(@data)
   end
 end
@@ -387,7 +405,7 @@ def main
     else
       valid_days = nil
     end
-    config.save_task(opts[:new_task], valid_days, opts[:time])
+    config.save_task(opts[:new_task], valid_days, opts[:time], nil)
   elsif opts[:commit]
     puts 'commitment'
   else
