@@ -32,12 +32,12 @@ class List
   attr_accessor :tasks, :current_context, :context_entrance_time
 
   def initialize(task_list, current_context, context_entrance_time)
-    @tasks = {}
+    @tasks = []
     if task_list
       task_list.each do |task|
         #task.first refers to the key (task name), since the task is stored [key, val]
         task_instance = Task.new(task.first, task[1][:days], task[1][:commitment])
-        @tasks[task_instance.name] = task_instance
+        @tasks << task_instance
       end
     end
 
@@ -45,16 +45,56 @@ class List
     @context_entrance_time = context_entrance_time if context_entrance_time
   end
 
+  # TODO: Remove if unused.
   def addTask(name, days, commitment)
     this_task = Task.new(name, days, commitment)
-    @tasks[name] = this_task
+    #@tasks[name] = this_task
   end
 
   def print
     ii = 0
-    @tasks.each do |key, value|
-      puts ii.to_s + ': ' + key
-      ii = ii + 1
+    @tasks.each_with_index do |task, ii|
+      puts ii.to_s + ': ' + task.name
+    end
+  end
+
+  def switch(config, histclass, context_number)
+
+    if @tasks.empty?
+      raise RuntimeError, "No tasks are defined."
+    end
+
+    unless (0..@tasks.size-1).member?(context_number.to_i)
+      raise ArgumentError, "Context choice out of bounds."
+    end
+
+    unless @current_context
+      puts 'didnt find a context, switching to new one'
+      config.save_context_switch(context_number)
+    end
+
+    if @current_context == context_number
+      puts 'found a context to exit, but not switching to a new one.'
+      current_task = find_task_by_number(@current_context)
+      histclass.save_history(current_task.name, @context_entrance_time, Time.now.getutc)
+      config.clear_current_context
+      return
+    end
+
+    if @current_context && @context_entrance_time
+      puts 'found a context, saving history and switching to new one.'
+      current_task = find_task_by_number(@current_context)
+      histclass.save_history(current_task.name, @context_entrance_time, Time.now.getutc)
+      config.clear_current_context
+      config.save_context_switch(context_number)
+    end
+  end
+
+  def find_task_by_number(numeric_selection)
+    if @tasks[numeric_selection.to_i]
+      return @tasks[numeric_selection.to_i]
+    else
+      return nil
     end
   end
 end
@@ -173,11 +213,29 @@ class Configuration < BaseConfig
     @data[:tasks][task] = {:days => valid_days, :commitment => time_commitment}
     save(data)
   end
+
+  def save_context_switch(context_number)
+    @data[:current_context] = context_number
+    @data[:context_entrance_time] = Time.now.getutc
+    save(data)
+  end
+
+  def clear_current_context()
+    @data[:current_context], @data[:context_entrance_time] = nil, nil
+    save(@data)
+  end
 end
 
 class History < BaseConfig
+
   def initialize(file_path)
     super(file_path)
+  end
+
+  def save_history(task_name, entrance_time, exit_time)
+      @data[:tasks][task_name] ||= Array.new
+      @data[:tasks][task_name] << [entrance_time, exit_time]
+      save(@data)
   end
 end
 
@@ -302,9 +360,9 @@ def main
 
   opts = parse_options
 
-  if opts[:switch]
-    hist = History.new(HISTORY_FILE)
-    history_data = hist.load
+  if opts[:chosen_context]
+    histclass = History.new(HISTORY_FILE)
+    history_data = histclass.load
   end 
 
   config = Configuration.new(CONFIG_FILE)
@@ -313,12 +371,11 @@ def main
   # Generate list from configuration data:
   list = List.new(config_data[:tasks], config_data[:current_context], config_data[:context_entrance_time]);
 
-  binding.pry
   # Handle behaviors:
   if opts[:print]
     list.print
   elsif opts[:chosen_context]
-    puts 'context switch'
+    list.switch(config, histclass, opts[:chosen_context])
   elsif opts[:new_task]
     raise ArgumentError, "Duplicate task." if config_data[:tasks].keys.include? opts[:new_task]
     if opts[:valid_days]
@@ -326,7 +383,6 @@ def main
     else
       valid_days = nil
     end
-    puts 'okay now we save the task'
     config.save_task(opts[:new_task], valid_days, opts[:time])
   elsif opts[:commit]
     puts 'commitment'
