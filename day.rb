@@ -12,7 +12,7 @@ require 'yaml'
 require 'fileutils'
 require 'pry'
 
-VERSION = '0.92'
+VERSION = '1.0'
 CONFIG_FILE = ENV['HOME'] + '/.app_data/.daytodo'
 HISTORY_FILE = ENV['HOME'] + '/.app_data/.daytodo_history'
 
@@ -110,6 +110,13 @@ class List
     else
       return nil
     end
+  end
+
+  def clear_fulfillments(config)
+    config.data[:tasks].each do |key, value|
+      value[:fulfillment] = nil
+    end
+    config.save_self
   end
 end
 
@@ -246,6 +253,10 @@ class Configuration < BaseConfig
     @data[:tasks][task_name][:fulfillment] += time.to_f
     save(@data)
   end
+
+  def save_self
+    save(@data)
+  end
 end
 
 class History < BaseConfig
@@ -272,8 +283,8 @@ def parse_options
   case ARGV[0]
   when nil
     opts[:print] = true
-  when 'commit'
-    opts[:commit] = true
+  when 'clear'
+    opts[:clear] = true
   else
     # Argument doesn't match any commands...
     # So we assume it's a new task definition if alphanumeric,
@@ -406,8 +417,9 @@ def main
       valid_days = nil
     end
     config.save_task(opts[:new_task], valid_days, opts[:time], nil)
-  elsif opts[:commit]
-    puts 'commitment'
+  elsif opts[:clear]
+    puts 'Clearing fulfillment data.'
+    list.clear_fulfillments(config)
   else
     raise ArgumentError, "No behavior defined! Check options parsing. "
   end
