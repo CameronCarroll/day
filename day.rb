@@ -12,7 +12,7 @@ require 'yaml'
 require 'fileutils'
 require 'pry'
 
-VERSION = '0.9'
+VERSION = '0.91'
 CONFIG_FILE = ENV['HOME'] + '/.app_data/.daytodo'
 HISTORY_FILE = ENV['HOME'] + '/.app_data/.daytodo_history'
 
@@ -46,6 +46,9 @@ class List
   end
 
   def print
+    puts "Day.rb (#{VERSION})"
+    puts "Today's tasks:"
+    puts ""
     ii = 0
     @tasks.each_with_index do |task, ii|
       puts ii.to_s + ': ' + task.name
