@@ -45,12 +45,6 @@ class List
     @context_entrance_time = context_entrance_time if context_entrance_time
   end
 
-  # TODO: Remove if unused.
-  def addTask(name, days, commitment)
-    this_task = Task.new(name, days, commitment)
-    #@tasks[name] = this_task
-  end
-
   def print
     ii = 0
     @tasks.each_with_index do |task, ii|
