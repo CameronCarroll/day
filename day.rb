@@ -7,10 +7,8 @@
 require 'rubygems'
 require 'bundler/setup'
 
-require 'trollop'
 require 'yaml'
 require 'fileutils'
-require 'pry'
 
 VERSION = '1.0'
 CONFIG_FILE = ENV['HOME'] + '/.app_data/.daytodo'
