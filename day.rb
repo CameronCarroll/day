@@ -61,7 +61,7 @@ class List
       end
     end
     puts "\n"
-    puts "Current task: " + find_task_by_number(@current_context).name
+    puts "Current task: " + find_task_by_number(@current_context).name if @current_context
   end
 
   def switch(config, histclass, context_number)
@@ -121,6 +121,7 @@ class List
     end
     config.save_self
   end
+
 end
 
 class Task
@@ -257,6 +258,11 @@ class Configuration < BaseConfig
     save(@data)
   end
 
+  def delete_task(task_key)
+    @data[:tasks].delete task_key
+    save(@data)
+  end
+
   def save_self
     save(@data)
   end
@@ -288,6 +294,8 @@ def parse_options
     opts[:print] = true
   when 'clear'
     opts[:clear] = true
+  when 'delete'
+    opts[:delete] = true
   else
     # Argument doesn't match any commands...
     # So we assume it's a new task definition if alphanumeric,
@@ -298,6 +306,7 @@ def parse_options
       opts[:new_task] = ARGV[0]
     end
   end
+
 
   # When we define a new task we can specify the days and time inline.
   # For each additional argument, if it's numeric, assume we're specifying the time.
@@ -321,6 +330,17 @@ def parse_options
           opts[:time] = arg
         end
       end
+    end
+  end
+
+  # If delete is true, grab a context number from ARG 1. 
+  if opts[:delete]
+    delete_error_msg = "Must supply context number after 'delete' keyword. (i.e. 'day delete 3')"
+    if ARGV[1]
+      # Have to check if it's a valid context somewhere else...
+      opts[:chosen_context] = ARGV[1]
+    else
+      raise ArgumentError, delete_error_msg
     end
   end
 
@@ -396,7 +416,7 @@ def main
 
   opts = parse_options
 
-  if opts[:chosen_context]
+  if opts[:chosen_context] && !opts[:delete]
     histclass = History.new(HISTORY_FILE)
     history_data = histclass.load
   end 
@@ -410,7 +430,7 @@ def main
   # Handle behaviors:
   if opts[:print]
     list.printout
-  elsif opts[:chosen_context]
+  elsif opts[:chosen_context] && !opts[:delete]
     list.switch(config, histclass, opts[:chosen_context])
   elsif opts[:new_task]
     raise ArgumentError, "Duplicate task." if config_data[:tasks].keys.include? opts[:new_task]
@@ -423,6 +443,19 @@ def main
   elsif opts[:clear]
     puts 'Clearing fulfillment data.'
     list.clear_fulfillments(config)
+  elsif opts[:delete]
+    task = list.find_task_by_number(opts[:chosen_context])
+    if task
+      if list.current_context == opts[:chosen_context]
+        raise ArgumentError, "Selected task is the chosen context! Check out first!"
+      else
+        config.delete_task(task.name)
+      end
+      
+    else
+      raise ArgumentError, "Task not found! Selection out of bounds."
+    end
+    
   else
     raise ArgumentError, "No behavior defined! Check options parsing. "
   end
