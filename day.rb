@@ -54,11 +54,14 @@ class List
       print ii.to_s + ': ' + task.name
       if task.fulfillment && task.time_commitment
         diff = task.fulfillment.to_f / task.time_commitment.to_f * 100
+        print " [#{'%2.2f' % task.fulfillment}/#{task.time_commitment}] "
         puts " [#{'%2.2f' % diff}%]"
       else
         print "\n"
       end
     end
+    puts "\n"
+    puts "Current task: " + find_task_by_number(@current_context).name
   end
 
   def switch(config, histclass, context_number)
