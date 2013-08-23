@@ -39,7 +39,7 @@ Usage:
         
         day 0
         --> Exit Context: add_new_feature
-        --> Time: 2.29 minutes.
+        --> Time: 2.29 minutes
         
         day.rb
         --> Day.rb (1.0)
@@ -47,8 +47,15 @@ Usage:
         -->
         --> 0: add_new_feature [2.29/45]  [5.10%]
         
+* Delete a task
+
+        day.rb delete 0
+        
+* Clear fulfillment data on all tasks
+
+        day.rb clear
 * Jump directly from task to task
-* You can express days as monographs/digraphs when unambiguous or trigraphs/fullnames.
+* Express days as monographs/digraphs when unambiguous or trigraphs/fullnames.
 * Stores data by default in ~/.app_data/ -- Edit the constants at top of script to change this.
 
 
