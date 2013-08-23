@@ -1,53 +1,55 @@
 day.rb
-------
-
-A simple time tracking / to-do application.
-
-Overview:
-=========
-1. Define daily tasks, or for specific dates
-2. List all tasks to pick a context
-3. Pick a task to time, or mark asynchronous tasks as finished
-4. Quantify time spent
-
-Runtime Requirements:
-==================
-1. Ruby (Tested with 2.0.0)
-2. bundler (gem install bundler)
-3. trollop rubygem installed globally (gem install trollop)
-
-Usage: 
 ======
 
-**(day.rb --help will print this out also)**
+A command-line time tracking / to-do application.
 
-Simply select a task to begin timing it, and run the same command again to stop.
+* Define tasks, optionally with expected time commitment.
+* Check in or out of tasks to track time spent.
 
-  **day.rb [options] [task number]**
+Requirements:
+-------------
+* Ruby (Tested with 2.0.0)
 
-  Examples:
+Usage: 
+------
+* Create a new task:
 
-  # day.rb -- List tasks for the day.
+        day.rb new_task_name
+        
+* Create tasks for certain days & expect a time in minutes
 
-  # day.rb new_task -- Adds a new task; Defaults to 'every day.'
+        day.rb write_lab_report m w 120
+        (or)
+        day.rb add_new_feature 45
+        
+        --> Creating new task: add_new_feature
 
-  # day.rb 0 -- Switch context & start timing new_task... tasks are indexed from 0.
+* Check into a task while you're working on it
 
-  # day.rb new_task2
-
-  # day.rb 1 -- Switch context and save time spent in previous context.
-
-  # day.rb 1 -- Exit context, save times.
-
-  #day.rb new_task3 m w thu -- Create new_task3 for monday, wednesday and thursday.
-
-  Notes:
-
-  * Days of the week can either be defined as individual letters and digraphs, where necessary, or trigraphs where desired. 
-  * Must be given as a list of lowercase keys.
-  * ie: m, tu, w, th, f, sa, su
-  * You could also use the internal representation, where 0 corresponds to sunday and 6 to saturday.
-  * When using day.rb <noun>, integer numerical input will switch context, while alphanumeric input will create a new task.
+        day.rb
+        --> Day.rb (1.0)
+        --> Today's tasks:
+        -->
+        --> 0: add_new_feature
+        
+        day 0
+        --> Enter context: add_new_feature
+        
+        (2 minutes later)
+        
+        day 0
+        --> Exit Context: add_new_feature
+        --> Time: 2.29 minutes.
+        
+        day.rb
+        --> Day.rb (1.0)
+        --> Today's tasks:
+        -->
+        --> 0: add_new_feature [2.29/45]  [5.10%]
+        
+* Jump directly from task to task
+* You can express days as monographs/digraphs when unambiguous or trigraphs/fullnames.
+* Stores data by default in ~/.app_data/ -- Edit the constants at top of script to change this.
 
 
 Copyright 2013 - Cameron Carroll
