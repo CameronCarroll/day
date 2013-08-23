@@ -9,7 +9,6 @@ require 'bundler/setup'
 
 require 'yaml'
 require 'fileutils'
-require 'pry'
 
 VERSION = '1.1'
 CONFIG_FILE = ENV['HOME'] + '/.app_data/.daytodo'
