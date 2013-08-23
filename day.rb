@@ -9,8 +9,9 @@ require 'bundler/setup'
 
 require 'yaml'
 require 'fileutils'
+require 'pry'
 
-VERSION = '1.0'
+VERSION = '1.1'
 CONFIG_FILE = ENV['HOME'] + '/.app_data/.daytodo'
 HISTORY_FILE = ENV['HOME'] + '/.app_data/.daytodo_history'
 
@@ -51,15 +52,29 @@ class List
     @tasks.each_with_index do |task, ii|
       print ii.to_s + ': ' + task.name
       if task.fulfillment && task.time_commitment
-        diff = task.fulfillment.to_f / task.time_commitment.to_f * 100
-        print " [#{'%2.2f' % task.fulfillment}/#{task.time_commitment}] "
-        puts " [#{'%2.2f' % diff}%]"
+        print_fulfillment(task.fulfillment, task.time_commitment)
       else
         print "\n"
       end
     end
     puts "\n"
-    puts "Current task: " + find_task_by_number(@current_context).name if @current_context
+    if @current_context
+      current_task = find_task_by_number(@current_context)
+      time_difference_minutes = (Time.now.getutc - @context_entrance_time) / 60
+      print "Current task: " + current_task.name
+      if current_task.time_commitment
+        print_fulfillment(time_difference_minutes, current_task.time_commitment)
+      else
+        puts "\n"
+        print_time(time_difference_minutes)
+      end
+    end
+  end
+
+  def print_fulfillment(fulfillment, commitment)
+    diff = fulfillment.to_f / commitment.to_f * 100
+    print " [#{'%2.2f' %fulfillment}/#{commitment}] "
+    puts " [#{'%2.2f' % diff}%]"
   end
 
   def switch(config, histclass, context_number)
