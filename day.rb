@@ -299,7 +299,7 @@ def parse_options
   opts = {}
 
   # Check first argument, which defines behavior.
-  # We can :print, :commit, select a :chosen_context,
+  # We can :print, :clear, :delete, select a :chosen_context,
   # or define a :new_task.
   case ARGV[0]
   when nil
