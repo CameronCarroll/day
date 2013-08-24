@@ -13,30 +13,17 @@ class Task
     if @valid_days
       today = Time.new.wday #0 is sunday, 6 saturday
 
-      weekday_short = case today
-      when 0 then 'su'
-      when 1 then 'm'
-      when 2 then 'tu'
-      when 3 then 'w'
-      when 4 then 'th'
-      when 5 then 'f'
-      when 6 then 'sa'
+      weekday_key = case today
+      when 0 then :sunday
+      when 1 then :monday
+      when 2 then :tuesday
+      when 3 then :wednesday
+      when 4 then :thursday
+      when 5 then :friday
+      when 6 then :saturday
       end
 
-      weekday_long = case today
-      when 0 then 'sun'
-      when 1 then 'mon'
-      when 2 then 'tue'
-      when 3 then 'wed'
-      when 4 then 'thu'
-      when 5 then 'fri'
-      when 6 then 'sat'
-      end
-
-
-      if @valid_days.include?(today) || @valid_days.include?(weekday_short)
-        return true
-      elsif (@valid_days.include?(weekday_long) || @valid_days.empty?)
+      if (@valid_days.include?(weekday_key) || @valid_days.empty?)
         return true
       else
         return false
