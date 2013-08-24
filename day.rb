@@ -9,6 +9,7 @@ require 'bundler/setup'
 
 require 'yaml'
 require 'fileutils'
+require 'pry'
 
 VERSION = '1.1'
 CONFIG_FILE = ENV['HOME'] + '/.app_data/.daytodo'
@@ -33,9 +34,9 @@ class List
     @tasks = []
     if task_list
       task_list.each do |task|
-        #task.first refers to the key (task name), since the task is stored [key, val]
+        #task.first refers to the key (task name), since the task is stored [key, val] and key = name
         task_instance = Task.new(task.first, task[1][:days], task[1][:commitment], task[1][:fulfillment])
-        @tasks << task_instance
+        @tasks << task_instance if task_instance.valid_today?
       end
     end
 
@@ -147,7 +148,7 @@ class Task
     @fulfillment = fulfillment
   end
 
-  def self.valid_today?
+  def valid_today?
     if @valid_days
       today = Time.new.wday #0 is sunday, 6 saturday
 
@@ -171,9 +172,10 @@ class Task
       when 6 then 'sat'
       end
 
+
       if @valid_days.include?(today) || @valid_days.include?(weekday_short)
         return true
-      elsif @valid_days.include? weekday_long || @valid_days.empty?
+      elsif (@valid_days.include?(weekday_long) || @valid_days.empty?)
         return true
       else
         return false
