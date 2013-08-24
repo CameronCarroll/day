@@ -59,6 +59,14 @@ Usage:
 * Express days as monographs/digraphs when unambiguous or trigraphs/fullnames.
 * Stores data by default in ~/.app_data/ -- Edit the constants at top of script to change this.
 
+Issues:
+------------
+    Could not parse day argument! Check your day glyphs. (ArgumentError)
+    
+    (Solution: See https://gist.github.com/sanarothe/6326110)
+
+
+
 
 Copyright 2013 - Cameron Carroll
 License: GNU GPL V3

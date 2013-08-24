@@ -9,9 +9,8 @@ require 'bundler/setup'
 
 require 'yaml'
 require 'fileutils'
-require 'pry'
 
-VERSION = '1.1'
+VERSION = '1.2'
 CONFIG_FILE = ENV['HOME'] + '/.app_data/.daytodo'
 HISTORY_FILE = ENV['HOME'] + '/.app_data/.daytodo_history'
 
