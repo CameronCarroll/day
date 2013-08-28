@@ -34,8 +34,8 @@ class List
     if @current_context
       current_task = find_task_by_number(@current_context)
       time_difference_minutes = (Time.now.getutc - @context_entrance_time) / 60
-      time_diff_today = current_task.day_fulfillment + time_difference_minutes
-      print "Current task: " + current_task.name
+      time_diff_today = current_task.day_fulfillment + time_difference_minutes if current_task.day_fulfillment
+      print "Current task: " + " (#{@current_context}) " + current_task.name
       if current_task.time_commitment
         print_fulfillment(time_difference_minutes, current_task.time_commitment, time_diff_today)
       else
