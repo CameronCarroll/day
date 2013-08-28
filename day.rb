@@ -10,6 +10,7 @@ require 'bundler/setup'
 require 'yaml'
 require 'fileutils'
 
+
 require_relative 'lib/baseconfig'
 require_relative 'lib/config'
 require_relative 'lib/history'
@@ -58,7 +59,7 @@ def main
     else
       valid_days = nil
     end
-    config.save_task(opts[:new_task], valid_days, opts[:time], nil)
+    config.save_task(opts[:new_task], valid_days, opts[:time], nil, [])
   elsif opts[:clear]
     puts 'Clearing fulfillment data.'
     list.clear_fulfillments(config)

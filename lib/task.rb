@@ -1,12 +1,15 @@
 class Task
 
-  attr_reader :name, :valid_days, :time_commitment, :fulfillment
+  attr_reader :name, :valid_days, :time_commitment, :fulfillment, :day_fulfillment
 
-  def initialize(name, valid_days, time_commitment, fulfillment)
+  def initialize(name, valid_days, time_commitment, fulfillment, day_fulfillment)
     @name = name
     @valid_days = valid_days
     @time_commitment = time_commitment
     @fulfillment = fulfillment
+    if day_fulfillment
+      @day_fulfillment = day_fulfillment[1]
+    end
   end
 
   def valid_today?
