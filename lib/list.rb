@@ -23,7 +23,7 @@ class List
     ii = 0
     @tasks.each_with_index do |task, ii|
       print ii.to_s + ': ' + task.name
-      if task.fulfillment && task.time_commitment
+      if task.time_commitment
         print_fulfillment(task.fulfillment, task.time_commitment)
       else
         print "\n"
@@ -44,9 +44,13 @@ class List
   end
 
   def print_fulfillment(fulfillment, commitment)
-    diff = fulfillment.to_f / commitment.to_f * 100
-    print " [#{'%2.2f' %fulfillment}/#{commitment}] "
-    puts " [#{'%2.2f' % diff}%]"
+    if fulfillment
+      diff = fulfillment.to_f / commitment.to_f * 100
+      print " [#{'%2.2f' %fulfillment}/#{commitment}] "
+      puts " [#{'%2.2f' % diff}%]"
+    else
+      puts " [0/#{commitment}] "
+    end
   end
 
   def switch(config, histclass, context_number)
