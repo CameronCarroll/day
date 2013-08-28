@@ -28,10 +28,10 @@ Usage:
 * Check into a task while you're working on it
 
         day.rb
-        --> Day.rb (1.0)
+        --> Day.rb (1.3)
         --> Today's tasks:
         -->
-        --> 0: add_new_feature
+        --> 0: add_new_feature [0/45]
         
         day 0
         --> Enter context: add_new_feature
@@ -40,13 +40,13 @@ Usage:
         
         day 0
         --> Exit Context: add_new_feature
-        --> Time: 2.29 minutes
+        --> Time: 2.3 minutes
         
         day.rb
         --> Day.rb (1.0)
         --> Today's tasks:
         -->
-        --> 0: add_new_feature [2.29/45]  [5.10%]
+        --> 0: add_new_feature [2.3/45]  [5.10%] (2.3 minutes today)
         
 * Delete a task
 
