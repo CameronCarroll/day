@@ -72,7 +72,7 @@ class List
       current_task = find_task_by_number(@current_context)
       puts "Exit Context: " + current_task.name
       time_difference = (Time.now.getutc - @context_entrance_time) / 60
-      config.update_fulfillment(current_task.name, time_difference)
+      config.update_fulfillment(current_task.name, time_difference) if current_task.time_commitment
       print_time(time_difference)
       histclass.save_history(current_task.name, @context_entrance_time, Time.now.getutc)
       config.clear_current_context
