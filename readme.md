@@ -1,6 +1,6 @@
 day.rb
 ======
-(Version 1.2 -- 8/23/13)
+(Version 1.3 -- 8/27/13)
 
 A command-line time tracking / to-do application.
 
