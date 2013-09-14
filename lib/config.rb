@@ -51,8 +51,12 @@ class Configuration < BaseConfig
       @data[:tasks][task_name][:day_fulfillment][0] = Time.new.yday
       @data[:tasks][task_name][:day_fulfillment][1] = time
     end
-    @data[:tasks][task_name][:fulfillment] ||= 0
-    @data[:tasks][task_name][:fulfillment] += time.to_f
+
+    if @data[:tasks][task_name][:commitment]
+      @data[:tasks][task_name][:fulfillment] ||= 0
+      @data[:tasks][task_name][:fulfillment] += time.to_f
+    end
+    
     save(@data)
   end
 

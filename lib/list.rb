@@ -24,11 +24,7 @@ class List
     ii = 0
     @tasks.each_with_index do |task, ii|
       print ii.to_s + ': ' + task.name
-      if task.time_commitment
-        print_fulfillment(task.fulfillment, task.time_commitment, task.day_fulfillment)
-      else
-        print "\n"
-      end
+      print_fulfillment(task.fulfillment, task.time_commitment, task.day_fulfillment)
     end
     puts "\n"
     if @current_context
@@ -49,15 +45,16 @@ class List
   def print_fulfillment(fulfillment, commitment, day_fulfillment)
     if fulfillment
       diff = fulfillment.to_f / commitment.to_f * 100
-      print " [#{'%2.1f' %fulfillment}/#{commitment}] "
+      print " [#{'%2.1f' %fulfillment}/#{commitment} minutes]"
       print " [#{'%2.1f' % diff}%]"
-      if day_fulfillment
-        puts " (#{'%2.1f' % day_fulfillment} minutes today)"
-      else
-        puts ""
-      end
+    elsif commitment
+      print " (#{commitment} minute commitment)"
+    end
+
+    if day_fulfillment
+      puts " (#{'%2.1f' % day_fulfillment} minutes today)"
     else
-      puts " [0/#{commitment}] "
+      puts ""
     end
   end
 
@@ -80,7 +77,7 @@ class List
       current_task = find_task_by_number(@current_context)
       puts "Exit Context: " + current_task.name
       time_difference = (Time.now.getutc - @context_entrance_time) / 60
-      config.update_fulfillment(current_task.name, time_difference) if current_task.time_commitment
+      config.update_fulfillment(current_task.name, time_difference)
       print_time(time_difference)
       histclass.save_history(current_task.name, @context_entrance_time, Time.now.getutc)
       config.clear_current_context
