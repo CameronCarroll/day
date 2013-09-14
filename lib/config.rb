@@ -10,8 +10,15 @@ class Configuration < BaseConfig
     @tasks = []
     unless @data[:tasks].empty?
       @data[:tasks].each do |task|
-        task_object = Task.new(task.first, task[1][:days], task[1][:commitment], task[1][:fulfillment], task[1][:day_fulfillment])
-        @tasks << task_object
+        task_yday = task[1][:day_fulfillment][0] if task[1][:day_fulfillment]
+        today_yday = Time.new.yday
+        if task_yday && task_yday == today_yday
+          task_object = Task.new(task.first, task[1][:days], task[1][:commitment], task[1][:fulfillment], task[1][:day_fulfillment])
+          @tasks << task_object
+        else
+          task_object = Task.new(task.first, task[1][:days], task[1][:commitment], task[1][:fulfillment], nil)
+          @data[:tasks][task.first][:day_fulfillment] = nil
+        end 
       end
     end
   end
@@ -38,7 +45,7 @@ class Configuration < BaseConfig
       @data[:tasks][task_name][:day_fulfillment] ||= Array.new
       @data[:tasks][task_name][:day_fulfillment][0] = Time.new.yday
       @data[:tasks][task_name][:day_fulfillment][1] = time
-    elsif @data[:tasks][task_name][:day_fulfillment][1] == Time.new.yday
+    elsif @data[:tasks][task_name][:day_fulfillment][0] == Time.new.yday
       @data[:tasks][task_name][:day_fulfillment][1] += time
     else
       @data[:tasks][task_name][:day_fulfillment][0] = Time.new.yday
