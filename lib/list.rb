@@ -101,7 +101,7 @@ class List
   end
 
   def print_time(time_difference)
-    puts "Time: " + ('%.2f' % (time_difference)).to_s + " minutes."
+    puts "Time: " + ('%.1f' % (time_difference)).to_s + " minutes."
   end
 
   def find_task_by_number(numeric_selection)
