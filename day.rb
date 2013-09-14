@@ -10,7 +10,6 @@ require 'bundler/setup'
 require 'yaml'
 require 'fileutils'
 
-
 require_relative 'lib/baseconfig'
 require_relative 'lib/config'
 require_relative 'lib/history'
@@ -18,7 +17,7 @@ require_relative 'lib/list'
 require_relative 'lib/task'
 require_relative 'lib/parser'
 
-VERSION = '1.3'
+VERSION = '1.4'
 CONFIG_FILE = ENV['HOME'] + '/.app_data/.daytodo'
 HISTORY_FILE = ENV['HOME'] + '/.app_data/.daytodo_history'
 

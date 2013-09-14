@@ -14,3 +14,10 @@
 * Printout will now clearly show tasks with commitments but no fulfillments.
 * Only update fulfillment on tasks that actually have commitments
 * Added day_fulfillment property on all tasks which resets every day and prints out how much progress you've made today.
+
+1.4 -- 9/13/13
+-------------------
+
+* Fix daily fulfillments. Previously every time you exited a context it would reset the daily fulfillment counter.
+* Change all time printouts to use 1 digit past the decimal.
+* Tracks and displays daily fulfillment for tasks that don't have commitments
