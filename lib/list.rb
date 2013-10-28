@@ -8,7 +8,7 @@ class List
       task_list.each do |task|
         #task.first refers to the key (task name), since the task is stored [key, val] and key = name
         #[:day_fulfillment][0] is the date and [1] is the accumulator.
-        task_instance = Task.new(task.first, task[1][:days], task[1][:commitment], task[1][:fulfillment], task[1][:day_fulfillment])
+        task_instance = Task.new(task.first, task[1][:days], task[1][:estimate], task[1][:fulfillment], task[1][:day_fulfillment])
         @tasks << task_instance if task_instance.valid_today?
       end
     end
@@ -24,7 +24,7 @@ class List
     ii = 0
     @tasks.each_with_index do |task, ii|
       print ii.to_s + ': ' + task.name
-      print_fulfillment(task.fulfillment, task.time_commitment, task.day_fulfillment)
+      print_fulfillment(task.fulfillment, task.time_estimate, task.day_fulfillment)
     end
     puts "\n"
     if @current_context
@@ -32,8 +32,8 @@ class List
       time_difference_minutes = (Time.now.getutc - @context_entrance_time) / 60
       time_diff_today = current_task.day_fulfillment + time_difference_minutes if current_task.day_fulfillment
       print "Current task: " + " (#{@current_context}) " + current_task.name
-      if current_task.time_commitment
-        print_fulfillment(time_difference_minutes, current_task.time_commitment, time_diff_today)
+      if current_task.time_estimate
+        print_fulfillment(time_difference_minutes, current_task.time_estimate, time_diff_today)
       else
         puts "\n"
         print_time(time_difference_minutes)
@@ -42,13 +42,13 @@ class List
     end
   end
 
-  def print_fulfillment(fulfillment, commitment, day_fulfillment)
+  def print_fulfillment(fulfillment, estimate, day_fulfillment)
     if fulfillment
-      diff = fulfillment.to_f / commitment.to_f * 100
-      print " [#{'%2.1f' %fulfillment}/#{commitment} minutes]"
+      diff = fulfillment.to_f / estimate.to_f * 100
+      print " [#{'%2.1f' %fulfillment}/#{estimate} minutes]"
       print " [#{'%2.1f' % diff}%]"
-    elsif commitment
-      print " (#{commitment} minute commitment)"
+    elsif estimate
+      print " (#{estimate} minute estimate)"
     end
 
     if day_fulfillment
