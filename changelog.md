@@ -18,6 +18,13 @@
 1.4 -- 9/13/13
 -------------------
 
-* Fix daily fulfillments. Previously every time you exited a context it would reset the daily fulfillment counter.
-* Change all time printouts to use 1 digit past the decimal.
+* Fixed daily fulfillments. Previously every time you exited a context it would reset the daily fulfillment counter.
+* Changed all time printouts to use 1 digit past the decimal.
 * Tracks and displays daily fulfillment for tasks that don't have commitments
+
+1.5 -- 10/29/13
+-------------------
+
+* Changed wording in program to use estimates instead of commitments.
+* Added optional descriptions for tasks
+* Added info command to print out descriptions without checking-in.

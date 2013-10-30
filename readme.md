@@ -1,10 +1,10 @@
 day.rb
 ======
-(Version 1.4 -- 9/13/13)
+(Version 1.5 -- 10/29/13)
 
 A command-line time tracking / to-do application.
 
-* Define tasks, optionally with expected time commitment.
+* Define & describe tasks, and set time estimates for yourself.
 * Check in or out of tasks to track time spent.
 
 Requirements:
@@ -24,30 +24,45 @@ Usage:
         day.rb add_new_feature 45
         
         --> Creating new task: add_new_feature
+        
 
 * Check into a task while you're working on it
 
         day.rb
-        --> Day.rb (1.4)
+        --> Day.rb (1.5)
         --> Today's tasks:
         -->
-        --> 0: add_new_feature (45 minute commitment)
+        --> 0: dayrb_add_descriptions (60 minute estimate)
+        --> 1: matl_quiz_post9 (15 minute estimate)
+        --> 2: matl_hw_ch9 (55 minute estimate)
         
-        day 0
-        --> Enter context: add_new_feature
+        day.rb 0
+        --> Enter context: dayrb_add_descriptions
         
-        (2 minutes later)
+        (85.9 minutes later)
         
-        day 0
-        --> Exit Context: add_new_feature
-        --> Time: 2.3 minutes
+        day 0.rb
+        --> Exit Context: dayrb_add_descriptions
+        --> Time: 85.9 minutes
         
         day.rb
-        --> Day.rb (1.4)
+        --> Day.rb (1.5)
         --> Today's tasks:
-        -->
-        --> 0: add_new_feature [2.3/45 minutes] [5.1%] (2.3 minutes today)
+        --> 
+        --> 0: dayrb_add_descriptions [85.9/60 minutes] [143.2%] (85.9 minutes today)
+        --> 1: matl_quiz_post9 (15 minute estimate)
+        --> 2: matl_hw_ch9 (55 minute estimate)
         
+* Add a task with description. <br />
+
+    (Note that the task description has to be in both quotes AND parenthesis. I'm sorry it's ugly, but getting special characters through the shell and into ARGV is hard.) <br /><br />
+    (Tasks with a description have an asterisk next to their name in the task list.)
+
+        day.rb task_name "(task description)" time_estimate
+
+* Print out description for a task
+        day.rb info task_number
+
 * Delete a task
 
         day.rb delete 0
@@ -55,6 +70,7 @@ Usage:
 * Clear fulfillment data on all tasks
 
         day.rb clear
+
 * Jump directly from task to task
 * Express days as monographs/digraphs when unambiguous or trigraphs/fullnames.
 * Stores data by default in ~/.app_data/ -- Edit the constants at top of script to change this.
