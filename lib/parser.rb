@@ -1,7 +1,7 @@
 module Parser
+
   def self.parse_options
       opts = {}
-
     # Check first argument, which defines behavior.
     # We can :print, :clear, :delete, select a :chosen_context,
     # or define a :new_task.
@@ -28,7 +28,13 @@ module Parser
     # For each additional argument, if it's numeric, assume we're specifying the time.
     # If it's alpha, check it against our list of monographs/digraphs/etc
     if opts[:new_task]
-      args = ARGV[1..-1]
+      remaining_arg_index = 1
+      binding.pry
+      if ARGV[1] =~ /\(.+\)/
+        opts[:description] = ARGV[1]
+        remaining_arg_index = 2
+      end
+      args = ARGV[remaining_arg_index..-1]
       opts[:valid_days] = true if args
       args.each do |arg|
         arg = arg.downcase

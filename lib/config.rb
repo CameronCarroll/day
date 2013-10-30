@@ -13,19 +13,19 @@ class Configuration < BaseConfig
         task_yday = task[1][:day_fulfillment][0] if task[1][:day_fulfillment]
         today_yday = Time.new.yday
         if task_yday && task_yday == today_yday
-          task_object = Task.new(task.first, task[1][:days], task[1][:estimate], task[1][:fulfillment], task[1][:day_fulfillment])
+          task_object = Task.new(task.first, task[1][:days], task[1][:description], task[1][:estimate], task[1][:fulfillment], task[1][:day_fulfillment])
           @tasks << task_object
         else
-          task_object = Task.new(task.first, task[1][:days], task[1][:estimate], task[1][:fulfillment], nil)
+          task_object = Task.new(task.first, task[1][:days], task[1][:description], task[1][:estimate], task[1][:fulfillment], nil)
           @data[:tasks][task.first][:day_fulfillment] = nil
         end 
       end
     end
   end
 
-  def save_task(task, valid_days, time_estimate, fulfillment, day_fulfillment)
+  def save_task(task, valid_days, description, time_estimate, fulfillment, day_fulfillment)
     puts "Creating new task: " + task
-    @data[:tasks][task] = {:days => valid_days, :estimate => time_estimate, :fulfillment => fulfillment, :day_fulfillment => day_fulfillment}
+    @data[:tasks][task] = {:days => valid_days, :description => description, :estimate => time_estimate, :fulfillment => fulfillment, :day_fulfillment => day_fulfillment}
     save(data)
   end
 

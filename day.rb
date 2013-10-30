@@ -58,7 +58,7 @@ def main
     else
       valid_days = nil
     end
-    config.save_task(opts[:new_task], valid_days, opts[:time], nil, [])
+    config.save_task(opts[:new_task], valid_days, opts[:description], opts[:time], nil, [])
   elsif opts[:clear]
     puts 'Clearing fulfillment data.'
     list.clear_fulfillments(config)

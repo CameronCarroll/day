@@ -8,7 +8,7 @@ class List
       task_list.each do |task|
         #task.first refers to the key (task name), since the task is stored [key, val] and key = name
         #[:day_fulfillment][0] is the date and [1] is the accumulator.
-        task_instance = Task.new(task.first, task[1][:days], task[1][:estimate], task[1][:fulfillment], task[1][:day_fulfillment])
+        task_instance = Task.new(task.first, task[1][:days], task[1][:description], task[1][:estimate], task[1][:fulfillment], task[1][:day_fulfillment])
         @tasks << task_instance if task_instance.valid_today?
       end
     end
@@ -24,6 +24,7 @@ class List
     ii = 0
     @tasks.each_with_index do |task, ii|
       print ii.to_s + ': ' + task.name
+      print "*" if task.description
       print_fulfillment(task.fulfillment, task.time_estimate, task.day_fulfillment)
     end
     puts "\n"
@@ -69,7 +70,9 @@ class List
     end
 
     unless @current_context
-      puts "Enter context: " + find_task_by_number(context_number).name
+      task = find_task_by_number(context_number)
+      puts "Enter context: " + task.name
+      print_description(task.description)
       config.save_context_switch(context_number)
     end
 
@@ -90,10 +93,19 @@ class List
       time_difference = (Time.now.getutc - @context_entrance_time) / 60
       print_time(time_difference)
       config.update_fulfillment(current_task.name, time_difference)
-      puts "Enter context: " + find_task_by_number(context_number).name
+      new_task = find_task_by_number(context_number)
+      puts "\nEnter context: " + new_task.name
+      print_description(new_task.description)
       histclass.save_history(current_task.name, @context_entrance_time, Time.now.getutc)
       config.clear_current_context
       config.save_context_switch(context_number)
+    end
+  end
+
+  def print_description(description)
+    if description
+      print "Description: "
+      puts description
     end
   end
 
