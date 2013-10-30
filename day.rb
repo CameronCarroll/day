@@ -66,15 +66,20 @@ def main
     task = list.find_task_by_number(opts[:chosen_context])
     if task
       if list.current_context == opts[:chosen_context]
-        raise ArgumentError, "Selected task is the chosen context! Check out first!"
+        raise ArgumentError, "Selected task is the chosen context! Are you sure you want to delete it? Check out first if so."
       else
         config.delete_task(task.name)
       end
-      
     else
       raise ArgumentError, "Task not found! Selection out of bounds."
     end
-    
+  elsif opts[:info]
+      task = list.find_task_by_number(opts[:info_context])
+      if task.description
+        list.print_description(task.description)
+      else
+        puts "(No description for #{task.name})"
+      end
   else
     raise ArgumentError, "No behavior defined! Check options parsing. "
   end

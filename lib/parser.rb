@@ -12,6 +12,8 @@ module Parser
       opts[:clear] = true
     when 'delete'
       opts[:delete] = true
+    when 'info'
+      opts[:info] = true
     else
       # Argument doesn't match any commands...
       # So we assume it's a new task definition if alphanumeric,
@@ -29,7 +31,6 @@ module Parser
     # If it's alpha, check it against our list of monographs/digraphs/etc
     if opts[:new_task]
       remaining_arg_index = 1
-      binding.pry
       if ARGV[1] =~ /\(.+\)/
         opts[:description] = ARGV[1]
         remaining_arg_index = 2
@@ -63,6 +64,14 @@ module Parser
         opts[:chosen_context] = ARGV[1]
       else
         raise ArgumentError, delete_error_msg
+      end
+    end
+
+    if opts[:info]
+      if ARGV[1]
+        opts[:info_context] = ARGV[1]
+      else
+        raise ArgumentError, "Must supply task number for which we should print the description. (i.e. 'day info 2')"
       end
     end
 
