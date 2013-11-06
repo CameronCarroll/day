@@ -1,6 +1,6 @@
 day.rb
 ======
-(Version 1.5 -- 10/29/13)
+(Version 1.6 -- 10/29/13)
 
 A command-line time tracking / to-do application.
 
@@ -29,7 +29,7 @@ Usage:
 * Check into a task while you're working on it
 
         day.rb
-        --> Day.rb (1.5)
+        --> Day.rb (1.6)
         --> Today's tasks:
         -->
         --> 0: dayrb_add_descriptions (60 minute estimate)
@@ -46,7 +46,7 @@ Usage:
         --> Time: 85.9 minutes
         
         day.rb
-        --> Day.rb (1.5)
+        --> Day.rb (1.6)
         --> Today's tasks:
         --> 
         --> 0: dayrb_add_descriptions [85.9/60 minutes] [143.2%] (85.9 minutes today)

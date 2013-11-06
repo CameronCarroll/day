@@ -4,9 +4,6 @@
 # Author: Cameron Carroll; Created July 2013
 # Purpose: Main file for day.rb time tracking app.
 
-require 'rubygems'
-require 'bundler/setup'
-
 require 'yaml'
 require 'fileutils'
 
@@ -17,7 +14,7 @@ require_relative 'lib/list'
 require_relative 'lib/task'
 require_relative 'lib/parser'
 
-VERSION = '1.5'
+VERSION = '1.6'
 CONFIG_FILE = ENV['HOME'] + '/.app_data/.daytodo'
 HISTORY_FILE = ENV['HOME'] + '/.app_data/.daytodo_history'
 

@@ -28,3 +28,8 @@
 * Changed wording in program to use estimates instead of commitments.
 * Added optional descriptions for tasks
 * Added info command to print out descriptions without checking-in.
+
+1.6 -- 11/05/13
+-------------------
+
+* Removed bundler dependency, deleted Gemfile. (Literally the only dependency was bundler itself. I guess hardly anyone will NOT have bundler, but nevertheless it's useless and gone.)
