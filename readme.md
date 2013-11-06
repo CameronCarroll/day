@@ -60,7 +60,8 @@ Usage:
 
         day.rb task_name "(task description)" time_estimate
 
-* Print out description for a task
+* Print out the description for a task
+
         day.rb info task_number
 
 * Delete a task
