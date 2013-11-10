@@ -73,7 +73,7 @@ def main
   elsif opts[:info]
       task = list.find_task_by_number(opts[:info_context])
       if task.description
-        list.print_description(task.description)
+        list.print_description(task.name, task.description)
       else
         puts "(No description for #{task.name})"
       end

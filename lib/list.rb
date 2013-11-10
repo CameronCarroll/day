@@ -72,7 +72,7 @@ class List
     unless @current_context
       task = find_task_by_number(context_number)
       puts "Enter context: " + task.name
-      print_description(task.description)
+      print_description(task.description) if task.description
       config.save_context_switch(context_number)
     end
 
@@ -95,18 +95,31 @@ class List
       config.update_fulfillment(current_task.name, time_difference)
       new_task = find_task_by_number(context_number)
       puts "\nEnter context: " + new_task.name
-      print_description(new_task.description)
+      print_description(new_task.description) if new_task.description
       histclass.save_history(current_task.name, @context_entrance_time, Time.now.getutc)
       config.clear_current_context
       config.save_context_switch(context_number)
     end
   end
 
-  def print_description(description)
-    if description
+  # Overloaded Function:
+  # ------------------------------------------------------
+  # 1: print_description(description) --
+  #     Declares `Description:' before printing it out.
+  # 2: print_description(title, description) --
+  #     Desclares `{Title}:' before printing it out.
+  def print_description(*args)
+    if args.length == 1
+      description = args[0]
       print "Description: "
       puts description
+    else
+      title = args[0]
+      description = args[1]
+      print "#{title}: "
+      puts description
     end
+      
   end
 
   def print_time(time_difference)
