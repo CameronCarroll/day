@@ -15,14 +15,46 @@ require_relative 'lib/task'
 require_relative 'lib/parser'
 
 VERSION = '1.6'
-CONFIG_FILE = ENV['HOME'] + '/.app_data/.daytodo'
-HISTORY_FILE = ENV['HOME'] + '/.app_data/.daytodo_history'
+
+#-------------- User Configuration:
+#-------------- Please DO edit the following to your liking:
+
+CONFIG_FILE = ENV['HOME'] + '/.daytodo'
+HISTORY_FILE = ENV['HOME'] + '/.daytodo_history'
+# Colorization: 
+# Use ANSI color codes...
+# (See http://bluesock.org/~willg/dev/ansi.html for codes.)
+# (Change values back to 0 for no colorization.)
+COMPLETION_COLOR = 0 # -- Used for completion printouts
+CONTEXT_SWITCH_COLOR = 0 # -- Used to declare `Enter/Exit Context'
+STAR_COLOR = 0 # -- Used for the description indicator star
+TITLE_COLOR = 0 # -- Used for any titles
 
 #-------------- Monkey Classes:
 
 class String
   def nan?
     self !~ /^\s*[+-]?((\d+_?)*\d+(\.(\d+_?)*\d+)?|\.(\d+_?)*\d+)(\s*|([eE][+-]?(\d+_?)*\d+)\s*)$/
+  end
+
+  def colorize(color_code)
+    "\e[#{color_code}m#{self}\e[0m"
+  end
+
+  def color_completion
+    colorize(COMPLETION_COLOR)
+  end
+
+  def color_context_switch
+    colorize(CONTEXT_SWITCH_COLOR)
+  end
+
+  def color_star
+    colorize(STAR_COLOR)
+  end
+
+  def color_title
+    colorize(TITLE_COLOR)
   end
 end
 

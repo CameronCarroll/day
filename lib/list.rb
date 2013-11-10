@@ -18,13 +18,13 @@ class List
   end
 
   def printout
-    puts "Day.rb (#{VERSION})"
-    puts "Today's tasks:"
+    puts "Day.rb (#{VERSION})".color_title
+    puts "Today's tasks:".color_title
     puts ""
     ii = 0
     @tasks.each_with_index do |task, ii|
       print ii.to_s + ': ' + task.name
-      print "*" if task.description
+      print "*".color_star if task.description
       print_fulfillment(task.fulfillment, task.time_estimate, task.day_fulfillment)
     end
     puts "\n"
@@ -32,7 +32,7 @@ class List
       current_task = find_task_by_number(@current_context)
       time_difference_minutes = (Time.now.getutc - @context_entrance_time) / 60
       time_diff_today = current_task.day_fulfillment + time_difference_minutes if current_task.day_fulfillment
-      print "Current task: " + " (#{@current_context}) " + current_task.name
+      print "Current task: ".color_title + " (#{@current_context}) " + current_task.name
       if current_task.time_estimate
         print_fulfillment(time_difference_minutes, current_task.time_estimate, time_diff_today)
       else
@@ -46,14 +46,14 @@ class List
   def print_fulfillment(fulfillment, estimate, day_fulfillment)
     if fulfillment
       diff = fulfillment.to_f / estimate.to_f * 100
-      print " [#{'%2.1f' %fulfillment}/#{estimate} minutes]"
-      print " [#{'%2.1f' % diff}%]"
+      print " [#{'%2.1f' %fulfillment}" + "/#{estimate} minutes]"
+      print " [#{'%2.1f' % diff}%]".color_completion
     elsif estimate
       print " (#{estimate} minute estimate)"
     end
 
     if day_fulfillment
-      puts " (#{'%2.1f' % day_fulfillment} minutes today)"
+      puts " {#{'%2.1f' % day_fulfillment} minutes today}".color_completion
     else
       puts ""
     end
@@ -71,14 +71,14 @@ class List
 
     unless @current_context
       task = find_task_by_number(context_number)
-      puts "Enter context: " + task.name
+      puts "Enter context: #{task.name}".color_context_switch
       print_description(task.description) if task.description
       config.save_context_switch(context_number)
     end
 
     if @current_context == context_number
       current_task = find_task_by_number(@current_context)
-      puts "Exit Context: " + current_task.name
+      puts "Exit Context: #{current_task.name}".color_context_switch
       time_difference = (Time.now.getutc - @context_entrance_time) / 60
       config.update_fulfillment(current_task.name, time_difference)
       print_time(time_difference)
@@ -89,12 +89,12 @@ class List
 
     if @current_context && @context_entrance_time
       current_task = find_task_by_number(@current_context)
-      puts "Exit context: " + current_task.name
+      puts "Exit context: #{current_task.name}".color_context_switch
       time_difference = (Time.now.getutc - @context_entrance_time) / 60
       print_time(time_difference)
       config.update_fulfillment(current_task.name, time_difference)
       new_task = find_task_by_number(context_number)
-      puts "\nEnter context: " + new_task.name
+      puts "\nEnter context: #{new_task.name}".color_context_switch
       print_description(new_task.description) if new_task.description
       histclass.save_history(current_task.name, @context_entrance_time, Time.now.getutc)
       config.clear_current_context
@@ -111,19 +111,20 @@ class List
   def print_description(*args)
     if args.length == 1
       description = args[0]
-      print "Description: "
+      print "Description: ".color_title
       puts description
     else
       title = args[0]
       description = args[1]
-      print "#{title}: "
+      print "#{title}: ".color_title
       puts description
     end
       
   end
 
   def print_time(time_difference)
-    puts "Time: " + ('%.1f' % (time_difference)).to_s + " minutes."
+    print "Time: ".color_title
+    puts ('%.1f' % (time_difference)).to_s + " minutes."
   end
 
   def find_task_by_number(numeric_selection)
