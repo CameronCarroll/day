@@ -8,11 +8,11 @@ module Parser
     case ARGV[0]
     when nil
       opts[:print] = true
-    when 'clear'
+    when 'clear', 'c'
       opts[:clear] = true
-    when 'delete'
+    when 'delete', 'rm'
       opts[:delete] = true
-    when 'info'
+    when 'info', 'i'
       opts[:info] = true
     else
       # Argument doesn't match any commands...
