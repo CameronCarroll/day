@@ -32,7 +32,7 @@ class List
       current_task = find_task_by_number(@current_context)
       time_difference_minutes = (Time.now.getutc - @context_entrance_time) / 60
       time_diff_today = current_task.day_fulfillment + time_difference_minutes if current_task.day_fulfillment
-      print "Current task: ".color_title + " (#{@current_context}) " + current_task.name
+      print "Current task: ".color_title + " (#{@current_context}) ".color_text + current_task.name.color_text
       if current_task.time_estimate
         print_fulfillment(time_difference_minutes, current_task.time_estimate, time_diff_today)
       else
@@ -46,10 +46,10 @@ class List
   def print_fulfillment(fulfillment, estimate, day_fulfillment)
     if fulfillment
       diff = fulfillment.to_f / estimate.to_f * 100
-      print " [#{'%2.1f' %fulfillment}" + "/#{estimate} minutes]"
+      print " [#{'%2.1f' %fulfillment}".color_completion + "/#{estimate} minutes]".color_text
       print " [#{'%2.1f' % diff}%]".color_completion
     elsif estimate
-      print " (#{estimate} minute estimate)"
+      print " (#{estimate} minute estimate)".color_text
     end
 
     if day_fulfillment
@@ -112,19 +112,19 @@ class List
     if args.length == 1
       description = args[0]
       print "Description: ".color_title
-      puts description
+      puts description.color_text
     else
       title = args[0]
       description = args[1]
       print "#{title}: ".color_title
-      puts description
+      puts description.color_text
     end
       
   end
 
   def print_time(time_difference)
     print "Time: ".color_title
-    puts ('%.1f' % (time_difference)).to_s + " minutes."
+    puts ('%.1f' % (time_difference)).to_s.color_text + " minutes.".color_text
   end
 
   def find_task_by_number(numeric_selection)

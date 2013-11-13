@@ -24,7 +24,7 @@ class Configuration < BaseConfig
   end
 
   def save_task(task, valid_days, description, time_estimate, fulfillment, day_fulfillment)
-    puts "Creating new task: ".color_title + task
+    puts "Creating new task: ".color_title + task.color_text
     @data[:tasks][task] = {:days => valid_days, :description => description, :estimate => time_estimate, :fulfillment => fulfillment, :day_fulfillment => day_fulfillment}
     save(data)
   end

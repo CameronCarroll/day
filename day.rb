@@ -29,6 +29,7 @@ COMPLETION_COLOR = 0 # -- Used for completion printouts
 CONTEXT_SWITCH_COLOR = 0 # -- Used to declare `Enter/Exit Context'
 STAR_COLOR = 0 # -- Used for the description indicator star
 TITLE_COLOR = 0 # -- Used for any titles
+TEXT_COLOR = 0 # -- Used for basically everything that doesn't fit under the others.
 
 #-------------- Monkey Classes:
 
@@ -55,6 +56,10 @@ class String
 
   def color_title
     colorize(TITLE_COLOR)
+  end
+
+  def color_text
+    colorize(TEXT_COLOR)
   end
 end
 
@@ -89,7 +94,7 @@ def main
     end
     config.save_task(opts[:new_task], valid_days, opts[:description], opts[:time], nil, [])
   elsif opts[:clear]
-    puts 'Clearing fulfillment data.'
+    puts 'Clearing fulfillment data.'.color_text
     list.clear_fulfillments(config)
   elsif opts[:delete]
     task = list.find_task_by_number(opts[:chosen_context])
@@ -97,6 +102,8 @@ def main
       if list.current_context == opts[:chosen_context]
         raise ArgumentError, "Selected task is the chosen context! Are you sure you want to delete it? Check out first if so."
       else
+        puts "Deleting task: ".color_title + "`#{task.name}'".color_text
+        puts "Description was: ".color_title + "`#{task.description}'".color_text if task.description
         config.delete_task(task.name)
       end
     else
@@ -107,7 +114,7 @@ def main
       if task.description
         list.print_description(task.name, task.description)
       else
-        puts "(No description for #{task.name})"
+        puts "(No description for #{task.name})".color_text
       end
   else
     raise ArgumentError, "No behavior defined! Check options parsing. "
