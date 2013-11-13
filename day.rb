@@ -2,7 +2,7 @@
 
 # Script File: day.rb
 # Author: Cameron Carroll; Created July 2013
-# Purpose: Main file for day.rb time tracking app.
+# Purpose: Main file for day.rb to-do & time tracking app.
 
 require 'yaml'
 require 'fileutils'
@@ -19,7 +19,10 @@ VERSION = '1.6'
 #-------------- User Configuration:
 #-------------- Please DO edit the following to your liking:
 
+# Configuration File: Stores tasks and their data
 CONFIG_FILE = ENV['HOME'] + '/.daytodo'
+# History File: Technically unused, not sure if it's still in-scope for the project, pending possible removal.
+#               But is supposed to keep track of task completion in the long-term.
 HISTORY_FILE = ENV['HOME'] + '/.daytodo_history'
 # Colorization: 
 # Use ANSI color codes...
@@ -31,7 +34,7 @@ STAR_COLOR = 0 # -- Used for the description indicator star
 TITLE_COLOR = 0 # -- Used for any titles
 TEXT_COLOR = 0 # -- Used for basically everything that doesn't fit under the others.
 
-#-------------- Monkey Classes:
+#-------------- Monkey-Patch Definitions:
 
 class String
   def nan?
