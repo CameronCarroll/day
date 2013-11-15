@@ -46,7 +46,7 @@ class List
   def print_fulfillment(fulfillment, estimate, day_fulfillment)
     if fulfillment
       diff = fulfillment.to_f / estimate.to_f * 100
-      print " [#{'%2.1f' %fulfillment}".color_completion + "/#{estimate} minutes]".color_text
+      print " [#{'%2.1f' % fulfillment}".color_completion + "/#{estimate} minutes]".color_text
       print " [#{'%2.1f' % diff}%]".color_completion
     elsif estimate
       print " (#{estimate} minute estimate)".color_text
