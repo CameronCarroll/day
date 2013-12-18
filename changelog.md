@@ -33,3 +33,15 @@
 -------------------
 
 * Removed bundler dependency, deleted Gemfile. (Literally the only dependency was bundler itself. I guess hardly anyone will NOT have bundler, but nevertheless it's useless and gone.)
+
+1.7 -- 11/10/13
+-------------------
+
+* Changed 'info' command behavior to print out task title instead of just declaring `Description:'.
+* Added aliases: 'c' for clear, 'i' for info and 'rm' for delete
+* Added colorized output, but it's off by default. (I didn't want to make any assumptions regarding readability.) Colored output can be configured for titles, enter/exits, completion printouts, and the description-indicating star specifically, as well as all of the remaining text generally.
+* Cleaned up some cosmetic issues in code and comments, and a tiny typo in readme.
+* Updated error messages for clarity, verbosity, and style.
+* Extended list of enabled-day glyphs to include more partial-spellings of day names.
+
+
