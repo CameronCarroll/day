@@ -125,6 +125,3 @@ def main
 end
 
 main()
-
-
-
