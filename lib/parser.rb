@@ -75,36 +75,6 @@ module Parser
       end
     end
 
-    # If commit is true, we have to supply some other arguments:
-    # Task name and expected time estimate.
-    if opts[:commit]
-      # Check for new task definition.
-      # Check that ARG 1 exists and that it is NOT numeric.
-      name_error_msg = "Must supply task name after 'commit' keyword. (i.e. 'day commit read_hn 0.5')"
-      if ARGV[1]
-        if ARGV[1].nan?
-          opts[:task_name] = ARGV[1]
-        else
-          raise ArgumentError, error_msg
-        end
-      else
-        raise ArgumentError, error_msg
-      end
-
-      # Check for time estimate definition.
-      # Check that ARG 2 exists and that it IS numeric.
-      time_error_msg = "Must supply expected time estimate after task name. (i.e. 'day commit read_hn 0.5')"
-      if ARGV[2]
-        if ARGV[2].nan?
-          raise ArgumentError, time_error_msg
-        else
-          opts[:time_estimate] = ARGV[2]
-        end
-      else
-        raise ArgumentError, time_error_msg
-      end
-    end
-
     return opts
   end
 
