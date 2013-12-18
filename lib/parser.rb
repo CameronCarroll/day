@@ -110,19 +110,19 @@ module Parser
 
   def self.parse_day_argument(day)
     case day
-    when 'su', 'sun', 'sunday', '0'
+    when 'su', 'sun', 'sund', 'sunda', 'sunday', '0'
       return :sunday
-    when 'm', 'mo', 'mon', 'monday', '1'
+    when 'm', 'mo', 'mon', 'mond', 'monda', 'monday', '1'
       return :monday
-    when 'tu', 'tue', 'tues', 'tuesday', '2'
+    when 'tu', 'tue', 'tues', 'tuesd', 'tuesda', 'tuesday', '2'
       return :tuesday
-    when 'w', 'we', 'wed', 'wednesday', '3'
+    when 'w', 'we', 'wed', 'wedn', 'wedne', 'wednes', 'wednesd', 'wednesda', 'wednesday', '3'
       return :wednesday
-    when 'th', 'thu', 'thur', 'thurs', 'thursday', '4'
+    when 'th', 'thu', 'thur', 'thurs', 'thursd', 'thursda', 'thursday', '4'
       return :thursday
-    when 'f', 'fr', 'fri', 'friday', '5'
+    when 'f', 'fr', 'fri', 'frid', 'frida', 'friday', '5'
       return :friday
-    when 'sa', 'sat', 'satu', 'satur', 'saturday', '6'
+    when 'sa', 'sat', 'satu', 'satur', 'saturd', 'saturda', 'saturday', '6'
       return :saturday
     else
       raise ArgumentError, "Couldn't parse which days to enable task. Please double-check glyphs."
