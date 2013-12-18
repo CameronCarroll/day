@@ -66,7 +66,7 @@ class List
     end
 
     unless (0..@tasks.size-1).member?(context_number.to_i)
-      raise ArgumentError, "Context choice out of bounds."
+      raise ArgumentError, "Choice is out of bounds! Didn't find a task at that index."
     end
 
     unless @current_context

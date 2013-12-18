@@ -42,13 +42,13 @@ module Parser
         if arg.nan?
           key = parse_day_argument(arg)
           if opts[key]
-            raise ArgumentError, 'Cannot specify a single day more than one time!'
+            raise ArgumentError, "You specified a single day (#{key}) more than once."
           else
             opts[key] = true
           end
         else
           if opts[:time]
-            raise ArgumentError, 'Can only supply one numerical argument corresponding to estimate time!'
+            raise ArgumentError, 'You specified more than one time estimate.'
           else
             opts[:time] = arg
           end
@@ -58,7 +58,7 @@ module Parser
 
     # If delete is true, grab a context number from ARG 1. 
     if opts[:delete]
-      delete_error_msg = "Must supply context number after 'delete' keyword. (i.e. 'day delete 3')"
+      delete_error_msg = "You didn't specify what you want to delete. Please supply context number after 'delete' keyword. (i.e. 'day delete 3')"
       if ARGV[1]
         # Have to check if it's a valid context somewhere else...
         opts[:chosen_context] = ARGV[1]
@@ -125,7 +125,7 @@ module Parser
     when 'sa', 'sat', 'satu', 'satur', 'saturday', '6'
       return :saturday
     else
-      raise ArgumentError, 'Could not parse day argument! Check your day glyphs.'
+      raise ArgumentError, "Couldn't parse which days to enable task. Please double-check glyphs."
     end
   end
 
