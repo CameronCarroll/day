@@ -41,7 +41,7 @@ Usage:
         
         (85.9 minutes later)
         
-        day 0.rb
+        day.rb 0
         --> Exit Context: dayrb_add_descriptions
         --> Time: 85.9 minutes
         
