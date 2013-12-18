@@ -53,7 +53,7 @@ task :update_version do
 end
 
 task :compile do
-  mkdir_p "build"
+  `mkdir -p "build"`
   target = "build/day.rb"
 
   `cat /dev/null > #{target}`
@@ -61,4 +61,11 @@ task :compile do
     `cat #{source} >> #{target}`
     `echo "\n" >> #{target}`
   end
+
+  # We need to remove require_relative lines to avoid runtime error...
+  `sed -i 's/require_relative.*//g' #{target}`
+
+  # And we also want to remove consecutive newlines...
+  `uniq #{target} > #{target}.tmp`
+  `mv #{target}.tmp #{target}`
 end
