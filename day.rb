@@ -41,6 +41,10 @@ class String
     self !~ /^\s*[+-]?((\d+_?)*\d+(\.(\d+_?)*\d+)?|\.(\d+_?)*\d+)(\s*|([eE][+-]?(\d+_?)*\d+)\s*)$/
   end
 
+  def number?
+    !self.nan?
+  end
+
   def colorize(color_code)
     "\e[#{color_code}m#{self}\e[0m"
   end

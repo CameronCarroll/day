@@ -18,7 +18,7 @@ module Parser
       # Argument doesn't match any commands...
       # So we assume it's a new task definition if alphanumeric,
       # and assume we want to switch context if numeric.
-      if !ARGV[0].nan?
+      if ARGV[0].number?
         opts[:chosen_context] = ARGV[0]
       else
         opts[:new_task] = ARGV[0]
