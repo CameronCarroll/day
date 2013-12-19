@@ -57,15 +57,19 @@ task :compile do
   target = "build/day.rb"
 
   `cat /dev/null > #{target}`
-  FileList['*.rb', 'lib/*.rb'].each do |source|
+
+  # First we need to get the first 36 lines of day.rb, which includes intro comments
+  # and user configuration. 
+  # But we want to strip off the require statements and the whitespace leftover.
+  `awk 'NR >= 1 && NR <= 36' day.rb | sed 's/require_relative.*//g' | uniq >> #{target}`
+
+  # Add all library files:
+  FileList['lib/*.rb'].each do |source|
     `cat #{source} >> #{target}`
     `echo "\n" >> #{target}`
   end
 
-  # We need to remove require_relative lines to avoid runtime error...
-  `sed -i 's/require_relative.*//g' #{target}`
-
-  # And we also want to remove consecutive newlines...
-  `uniq #{target} > #{target}.tmp`
-  `mv #{target}.tmp #{target}`
+  # Now finally we want to add the remaining body of day.rb
+  lines_in_dayrb = `wc -l day.rb`.to_i
+  `awk 'NR >= 37 && NR <= #{lines_in_dayrb+1}' day.rb >> #{target}`
 end
