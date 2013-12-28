@@ -18,9 +18,6 @@ class List
   end
 
   def printout
-    puts "Day.rb (#{VERSION})".color_title
-    puts "Today's tasks:".color_title
-    puts ""
     print_tasklist(DESCRIPTION_FLAG)
     puts "\n"
     if @current_context
@@ -107,7 +104,7 @@ Commands:
   (index of existing task)  Checks in or out of task according to numerical index
   delete                    Remove a task
   info                      Print out descriptions for one or all tasks
-  
+
 See readme.md for a more detailed overview.
     eos
 
