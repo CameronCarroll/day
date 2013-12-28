@@ -34,6 +34,9 @@ STAR_COLOR = 0 # -- Used for the description indicator star
 TITLE_COLOR = 0 # -- Used for any titles
 TEXT_COLOR = 0 # -- Used for basically everything that doesn't fit under the others.
 
+# Flag used to configure main printout. Default is no description and an asterisk indicator instead.
+DESCRIPTION_FLAG = :no_description
+
 #-------------- Monkey-Patch Definitions:
 
 class String
@@ -117,12 +120,16 @@ def main
       raise ArgumentError, "There was no task at that index. (Selection was out of bounds.)"
     end
   elsif opts[:info]
+    if opts[:info_context]
       task = list.find_task_by_number(opts[:info_context])
       if task.description
         list.print_description(task.name, task.description)
       else
         puts "(No description for #{task.name})".color_text
       end
+    else
+      list.print_tasklist(:description)
+    end
   else
     raise ArgumentError, "There isn't a response to that command.  "
   end

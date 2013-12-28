@@ -21,12 +21,7 @@ class List
     puts "Day.rb (#{VERSION})".color_title
     puts "Today's tasks:".color_title
     puts ""
-    ii = 0
-    @tasks.each_with_index do |task, ii|
-      print ii.to_s + ': ' + task.name
-      print "*".color_star if task.description
-      print_fulfillment(task.fulfillment, task.time_estimate, task.day_fulfillment)
-    end
+    print_tasklist(DESCRIPTION_FLAG)
     puts "\n"
     if @current_context
       current_task = find_task_by_number(@current_context)
@@ -40,6 +35,24 @@ class List
         print_time(time_difference_minutes)
       end
       puts "\n"
+    end
+  end
+
+  # description_flag:
+  #   :no_description -- prints out a star beside task name
+  #   :description    -- prints out full description
+  def print_tasklist(description_flag)
+    ii = 0
+    @tasks.each_with_index do |task, ii|
+      print ii.to_s + ': ' + task.name
+      print "*".color_star if task.description && (description_flag == :no_description)
+      print_fulfillment(task.fulfillment, task.time_estimate, task.day_fulfillment)
+      if task.description && (description_flag == :description)
+        print_description(task.description)
+      elsif (description_flag == :description)
+        puts "(No description.)"
+      end
+      
     end
   end
 
@@ -57,6 +70,31 @@ class List
     else
       puts ""
     end
+  end
+
+    # Overloaded Function:
+  # ------------------------------------------------------
+  # 1: print_description(description) --
+  #     Declares `Description:' before printing it out.
+  # 2: print_description(title, description) --
+  #     Desclares `{Title}:' before printing it out.
+  def print_description(*args)
+    if args.length == 1
+      description = args[0]
+      print "Description: ".color_title
+      puts description.color_text
+    else
+      title = args[0]
+      description = args[1]
+      print "#{title}: ".color_title
+      puts description.color_text
+    end
+      
+  end
+
+  def print_time(time_difference)
+    print "Time: ".color_title
+    puts ('%.1f' % (time_difference)).to_s.color_text + " minutes.".color_text
   end
 
   def switch(config, histclass, context_number)
@@ -102,30 +140,7 @@ class List
     end
   end
 
-  # Overloaded Function:
-  # ------------------------------------------------------
-  # 1: print_description(description) --
-  #     Declares `Description:' before printing it out.
-  # 2: print_description(title, description) --
-  #     Desclares `{Title}:' before printing it out.
-  def print_description(*args)
-    if args.length == 1
-      description = args[0]
-      print "Description: ".color_title
-      puts description.color_text
-    else
-      title = args[0]
-      description = args[1]
-      print "#{title}: ".color_title
-      puts description.color_text
-    end
-      
-  end
 
-  def print_time(time_difference)
-    print "Time: ".color_title
-    puts ('%.1f' % (time_difference)).to_s.color_text + " minutes.".color_text
-  end
 
   def find_task_by_number(numeric_selection)
     if @tasks[numeric_selection.to_i]

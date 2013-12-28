@@ -70,8 +70,6 @@ module Parser
     if opts[:info]
       if ARGV[1]
         opts[:info_context] = ARGV[1]
-      else
-        raise ArgumentError, "Must supply task number for which we should print the description. (i.e. 'day info 2')"
       end
     end
 
