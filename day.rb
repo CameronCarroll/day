@@ -36,6 +36,8 @@ TITLE_COLOR = 0 # -- Used for any titles
 TEXT_COLOR = 0 # -- Used for basically everything that doesn't fit under the others.
 
 # Flag used to configure main printout. Default is no description and an asterisk indicator instead.
+#   :no_description  -- Shows asterisk in main printout when a task has a description.
+#   :description     -- Actually prints out the whole description every time.
 DESCRIPTION_FLAG = :no_description
 
 # Editor constant. Change to your preferred editor for adding descriptions.
