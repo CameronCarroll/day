@@ -21,10 +21,10 @@ VERSION = '1.8'
 #-------------- Please DO edit the following to your liking:
 
 # Configuration File: Stores tasks and their data
-CONFIG_FILE = ENV['HOME'] + '/.daytodo'
+CONFIG_FILE = ENV['HOME'] + '/.config/dayrb/daytodo'
 # History File: Technically unused, not sure if it's still in-scope for the project, pending possible removal.
 #               But is supposed to keep track of task completion in the long-term.
-HISTORY_FILE = ENV['HOME'] + '/.daytodo_history'
+HISTORY_FILE = ENV['HOME'] + '/.config/dayrb/daytodo_history'
 # Colorization: 
 # Use ANSI color codes...
 # (See http://bluesock.org/~willg/dev/ansi.html for codes.)

@@ -72,16 +72,12 @@ Usage:
 
         day.rb clear
 
+* Or just one task
+
+        day.rb clear 0
+
 * Jump directly from task to task
-* Express days as monographs/digraphs when unambiguous or trigraphs/fullnames.
-* Stores data by default in ~/.app_data/ -- Edit the constants at top of script to change this.
-
-Issues:
-------------
-    Could not parse day argument! Check your day glyphs. (ArgumentError)
-    
-    (Solution: See https://gist.github.com/sanarothe/6326110)
-
+* Stores data by default in ~/.config/day/ -- Edit the constants at top of script to change this.
 
 
 
