@@ -30,16 +30,15 @@ module Parser
     # For each additional argument, if it's numeric, assume we're specifying the time.
     # If it's alpha, check it against our list of monographs/digraphs/etc
     if opts[:new_task]
-      remaining_arg_index = 1
-      if ARGV[1] =~ /\(.+\)/
-        opts[:description] = ARGV[1]
-        remaining_arg_index = 2
-      end
-      args = ARGV[remaining_arg_index..-1]
-      opts[:valid_days] = true if args
-      args.each do |arg|
-        arg = arg.downcase
-        if arg.nan?
+
+      # Element 0, the name, was already included as opts[:new_task] value
+      ARGV[1..-1].each do |arg|
+        if arg =~ /\(.+\)/
+          opts[:description] = arg
+        elsif arg.downcase == EDITOR
+          opts[:editor] = true
+        elsif arg.downcase.nan?
+          opts[:valid_days] ||= true
           key = parse_day_argument(arg)
           if opts[key]
             raise ArgumentError, "You specified a single day (#{key}) more than once."

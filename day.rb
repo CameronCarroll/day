@@ -16,6 +16,7 @@ require_relative 'lib/parser'
 
 VERSION = '1.7'
 
+
 #-------------- User Configuration:
 #-------------- Please DO edit the following to your liking:
 
@@ -36,6 +37,9 @@ TEXT_COLOR = 0 # -- Used for basically everything that doesn't fit under the oth
 
 # Flag used to configure main printout. Default is no description and an asterisk indicator instead.
 DESCRIPTION_FLAG = :no_description
+
+# Editor constant. Change to your preferred editor for adding descriptions.
+EDITOR = 'vim'
 
 #-------------- Monkey-Patch Definitions:
 
