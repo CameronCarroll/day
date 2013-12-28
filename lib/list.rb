@@ -97,6 +97,22 @@ class List
     puts ('%.1f' % (time_difference)).to_s.color_text + " minutes.".color_text
   end
 
+  def print_help
+    puts <<-eos
+Usage: day.rb <command> [<args>]
+
+Commands:
+  (no command)              Prints out task list for the day
+  (name of new task)        Creates a new task
+  (index of existing task)  Checks in or out of task according to numerical index
+  delete                    Remove a task
+  info                      Print out descriptions for one or all tasks
+  
+See readme.md for a more detailed overview.
+    eos
+
+  end
+
   def switch(config, histclass, context_number)
 
     if @tasks.empty?

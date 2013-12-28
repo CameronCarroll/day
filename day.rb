@@ -134,6 +134,8 @@ def main
     else
       list.print_tasklist(:description)
     end
+  elsif opts[:help]
+    list.print_help
   else
     raise ArgumentError, "There isn't a response to that command.  "
   end

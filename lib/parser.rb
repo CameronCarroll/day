@@ -14,6 +14,8 @@ module Parser
       opts[:delete] = true
     when 'info', 'i'
       opts[:info] = true
+    when 'help'
+      opts[:help] = true
     else
       # Argument doesn't match any commands...
       # So we assume it's a new task definition if alphanumeric,
