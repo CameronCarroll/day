@@ -1,4 +1,16 @@
-1.7 -- 11/10/13
+1.8 -- 12/28/13
+-------------------
+
+* Removed unused 'commit' command code.
+* Added VERSION file to act as authoritative version source.
+* Added Rakefile to build project, incrementing version and date and also building one-file distributable.
+* Added string helper String.number? to avoid !nan? double negative & clarifying intention.
+* Added a general 'info' command which prints out all descriptions.
+* Updated options parsing when creating a new task so that everything after task name can be in any order. (Previously, the description had to come first.)
+* Added a very rudimentary help command and version printout command.
+* Added task-specific fulfillment clear function rather than forcing clear on all of them.
+
+1.7 -- 12/18/13
 -------------------
 
 * Changed 'info' command behavior to print out task title instead of just declaring `Description:'.

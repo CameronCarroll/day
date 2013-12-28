@@ -14,7 +14,7 @@ require_relative 'lib/list'
 require_relative 'lib/task'
 require_relative 'lib/parser'
 
-VERSION = '1.7'
+VERSION = '1.8'
 
 
 #-------------- User Configuration:
