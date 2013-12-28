@@ -29,12 +29,27 @@ module Parser
       end
     end
 
+    # If delete is true, grab a context number from ARG 1. 
+    if opts[:delete]
+      delete_error_msg = "You didn't specify what you want to delete. Please supply context number after 'delete' keyword. (i.e. 'day delete 3')"
+      if ARGV[1]
+        # Have to check if it's a valid context somewhere else...
+        opts[:chosen_context] = ARGV[1]
+      else
+        raise ArgumentError, delete_error_msg
+      end
+    end
+
+    if opts[:info]
+      if ARGV[1]
+        opts[:info_context] = ARGV[1]
+      end
+    end
 
     # When we define a new task we can specify the days and time inline.
     # For each additional argument, if it's numeric, assume we're specifying the time.
     # If it's alpha, check it against our list of monographs/digraphs/etc
     if opts[:new_task]
-
       # Element 0, the name, was already included as opts[:new_task] value
       ARGV[1..-1].each do |arg|
         if arg =~ /\(.+\)/
@@ -58,24 +73,6 @@ module Parser
         end
       end
     end
-
-    # If delete is true, grab a context number from ARG 1. 
-    if opts[:delete]
-      delete_error_msg = "You didn't specify what you want to delete. Please supply context number after 'delete' keyword. (i.e. 'day delete 3')"
-      if ARGV[1]
-        # Have to check if it's a valid context somewhere else...
-        opts[:chosen_context] = ARGV[1]
-      else
-        raise ArgumentError, delete_error_msg
-      end
-    end
-
-    if opts[:info]
-      if ARGV[1]
-        opts[:info_context] = ARGV[1]
-      end
-    end
-
     return opts
   end
 
