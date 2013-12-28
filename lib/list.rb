@@ -175,4 +175,26 @@ See readme.md for a more detailed overview.
     config.save_self
   end
 
+  # Overloaded Function:
+  # ------------------------------------------------------
+  # 1: clear_fulfillment(config) --
+  #     Clear all fulfillment data.
+  # 2: clear_fulfillment(config, task_name) --
+  #     Clear only data for a single task.
+  def clear_fulfillment(*args)
+    config = args.first
+    if args.length == 1
+      config.data[:tasks].each do |key, value|
+        value[:fulfillment] = nil
+        value[:day_fulfillment] = nil
+      end
+      config.save_self
+    else
+      task_name = args[1]
+      config.data[:tasks][task_name][:fulfillment] = nil
+      config.data[:tasks][task_name][:day_fulfillment] = nil
+      config.save_self
+    end
+  end
+
 end

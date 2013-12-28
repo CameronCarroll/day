@@ -29,6 +29,10 @@ module Parser
       end
     end
 
+    if opts[:clear] && ARGV[1]
+      opts[:clear_context] = ARGV[1]
+    end
+
     # If delete is true, grab a context number from ARG 1. 
     if opts[:delete]
       delete_error_msg = "You didn't specify what you want to delete. Please supply context number after 'delete' keyword. (i.e. 'day delete 3')"

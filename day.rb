@@ -108,8 +108,16 @@ def main
     end
     config.save_task(opts[:new_task], valid_days, opts[:description], opts[:time], nil, [])
   elsif opts[:clear]
-    puts 'Clearing fulfillment data.'.color_text
-    list.clear_fulfillments(config)
+    if opts[:clear_context]
+      task = list.find_task_by_number(opts[:clear_context])
+      raise ArgumentError, "Invalid numerical index. (Didn't find a task there.)" unless task
+      puts "Clearing fulfillment data for #{task.name}.".color_text
+      list.clear_fulfillment(config, task.name)
+    else
+      puts 'Clearing all fulfillment data.'.color_text
+      list.clear_fulfillment(config)
+    end
+    
   elsif opts[:delete]
     task = list.find_task_by_number(opts[:chosen_context])
     if task
