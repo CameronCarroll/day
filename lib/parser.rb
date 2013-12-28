@@ -16,6 +16,8 @@ module Parser
       opts[:info] = true
     when 'help'
       opts[:help] = true
+    when 'version'
+      opts[:version] = true
     else
       # Argument doesn't match any commands...
       # So we assume it's a new task definition if alphanumeric,

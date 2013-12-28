@@ -110,6 +110,10 @@ See readme.md for a more detailed overview.
 
   end
 
+  def print_version
+    puts "Day.rb v#{VERSION}"
+  end
+
   def switch(config, histclass, context_number)
 
     if @tasks.empty?

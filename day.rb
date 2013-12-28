@@ -136,6 +136,8 @@ def main
     end
   elsif opts[:help]
     list.print_help
+  elsif opts[:version]
+    list.print_version
   else
     raise ArgumentError, "There isn't a response to that command.  "
   end
