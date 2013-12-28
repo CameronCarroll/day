@@ -61,7 +61,7 @@ task :compile do
   # First we need to get the first 36 lines of day.rb, which includes intro comments
   # and user configuration. 
   # But we want to strip off the require statements and the whitespace leftover.
-  `awk 'NR >= 1 && NR <= 36' day.rb | sed 's/require_relative.*//g' | uniq >> #{target}`
+  `awk 'NR >= 1 && NR <= 39' day.rb | sed 's/require_relative.*//g' | uniq >> #{target}`
 
   # Add all library files:
   FileList['lib/*.rb'].each do |source|
