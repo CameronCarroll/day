@@ -19,7 +19,6 @@ class List
 
   def printout
     print_tasklist(DESCRIPTION_FLAG)
-    puts "\n"
     if @current_context
       current_task = find_task_by_number(@current_context)
       time_difference_minutes = (Time.now.getutc - @context_entrance_time) / 60
@@ -39,7 +38,10 @@ class List
   #   :no_description -- prints out a star beside task name
   #   :description    -- prints out full description
   def print_tasklist(description_flag)
-    ii = 0
+    if @tasks.empty?
+      puts "(No tasks in list.)"
+    else
+      ii = 0
     @tasks.each_with_index do |task, ii|
       print ii.to_s + ': ' + task.name
       print "*".color_star if task.description && (description_flag == :no_description)
@@ -51,6 +53,8 @@ class List
       end
       
     end
+    end
+    
   end
 
   def print_fulfillment(fulfillment, estimate, day_fulfillment)
