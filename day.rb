@@ -43,6 +43,8 @@ DESCRIPTION_FLAG = :no_description
 # Editor constant. Change to your preferred editor for adding descriptions.
 EDITOR = 'vim'
 
+#[CUT HERE] -------------------------------------------------------------------
+
 #-------------- Monkey-Patch Definitions:
 
 class String
