@@ -14,41 +14,63 @@ task :update_version do
     current_version = file.gets
   end
 
-  previous_version = (current_version.to_f - 0.1).round(2).to_s
-  next_version = (current_version.to_f + 0.1).round(2).to_s
-
   puts "Current Version: #{current_version}"
 
+  split_version = current_version.split('.')
+
+  next_patch_version = update_patch(split_version, 1)
+  previous_patch_version = update_patch(split_version, -1)
+
+  next_minor_version = update_minor(split_version, 1)
+  previous_minor_version = update_minor(split_version, -1)
+
+  next_major_version = update_major(split_version, 1)
+  previous_major_version = update_major(split_version, -1)
+
+  previous_versions = [previous_patch_version, previous_minor_version, previous_major_version]
+  next_versions = [next_patch_version, next_minor_version, next_major_version]
+
   # Unlikely to happen, but if the source files get ahead of VERSION file we should warn and break.
-  next_version_in_dayrb = `grep #{next_version} day.rb`.length > 0
-  next_version_in_readme = `grep #{next_version} readme.md`.length > 0
+  next_versions.each do |version|
+    next_version_in_dayrb = `grep #{version} day.rb`.length > 0
+    next_version_in_readme = `grep #{version} readme.md`.length > 0
 
-  if next_version_in_dayrb || next_version_in_readme
-    puts "VERSION file is behind source files! Breaking; Please fix manually."
-    abort
+    if next_version_in_dayrb || next_version_in_readme
+      puts "VERSION file is behind source files! Breaking; Please fix manually."
+      abort
+    end
   end
 
-  # Check authoritative version source (VERSION FILE) against source files.
+  
+  old_version_in_readme, old_version_in_dayrb, old_version = nil, nil, nil
+
+  # Check authoritative version source (VERSION file) against source files.
   # If source files have an older version, update it.
-  old_version_in_dayrb = `grep #{previous_version} day.rb`.length > 0
-  old_version_in_readme = `grep #{previous_version} readme.md`.length > 0
-
-  if !old_version_in_readme && !old_version_in_dayrb
-    puts "Didn't find any old versions. Skipping to compilation."
-    Rake::Task['compile'].invoke
+  previous_versions.each do |version|
+    unless old_version_in_dayrb && old_version_in_readme
+      old_version_in_dayrb = `grep #{version} day.rb`.length > 0
+      old_version_in_readme = `grep #{version} readme.md`.length > 0
+      old_version = version if old_version_in_readme || old_version_in_dayrb
+      puts "Version in question: " + version if old_version
+    end
   end
+  
 
   if old_version_in_dayrb
-    puts "Replacing version #{previous_version} with #{current_version} in day.rb"
-    `sed -i 's/#{previous_version}/#{current_version}/g' day.rb`
+    puts "Replacing version #{old_version} with #{current_version} in day.rb"
+    `sed -i 's/#{old_version}/#{current_version}/g' day.rb`
   end
 
   if old_version_in_readme
     today_date = Time.new.strftime("%m/%d/%y")
-    puts "Replacing version #{previous_version} with #{current_version} in readme.md"
+    puts "Replacing version #{old_version} with #{current_version} in readme.md"
     puts "Replacing old date with #{today_date} in day.rb"
-    `sed -i 's/#{previous_version}/#{current_version}/g' readme.md`
+    `sed -i 's/#{old_version}/#{current_version}/g' readme.md`
     `sed -i 's%[0-9][0-9]/[0-9][0-9]/[0-9][0-9])%#{today_date})%' readme.md`
+  end
+
+  if !old_version_in_dayrb && !old_version_in_readme
+    puts "Didn't find any version errors."
   end
 end
 
@@ -72,4 +94,22 @@ task :compile do
   # Now finally we want to add the remaining body of day.rb
   lines_in_dayrb = `wc -l day.rb`.to_i
   `awk 'NR >= 46 && NR <= #{lines_in_dayrb+1}' day.rb >> #{target}`
+end
+
+def update_patch(split_version, increment)
+  different_patch = split_version[2].to_i + increment
+  different_patch_version = split_version[0..1].push(different_patch)
+  different_patch_version.join('.')
+end
+
+def update_minor(split_version, increment)
+  different_minor = split_version[1].to_i + increment
+  different_minor_version = [split_version[0],different_minor,split_version[2]]
+  different_minor_version.join('.')
+end
+
+def update_major(split_version, increment)
+  different_major = split_version[0].to_i + increment
+  different_major_version = split_version[1,2].unshift(different_major)
+  different_major_version.join('.')
 end
