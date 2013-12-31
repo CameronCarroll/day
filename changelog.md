@@ -1,3 +1,11 @@
+1.8.1 -- 12/30/13
+-------------------
+
+* Add "(No tasks in list.)" declaration so that the program always has SOME output.
+* Removed extra newline after task list printout. (Just trying to make thins look cleaner and more compact.)
+* Fixed build tool; Added a CUT HERE comment to day.rb which the build tool uses to split the file.
+* Updated build tool :update_version task to handle SemVer.
+
 1.8 -- 12/28/13
 -------------------
 
