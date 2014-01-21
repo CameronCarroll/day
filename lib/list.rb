@@ -44,7 +44,7 @@ class List
     else
       ii = 0
       @tasks.each_with_index do |task, ii|
-        print ii.to_s + ': ' + task.name
+        print ii.to_s.color_index + ': ' + task.name
         print "*".color_star if task.description && (description_flag == :no_description)
         print_fulfillment(task.fulfillment, task.time_estimate, task.day_fulfillment)
         if task.description && (description_flag == :description)
@@ -62,7 +62,7 @@ class List
     else
       @tasks.each_with_index do |task, ii|
         if task.description
-          print ii.to_s + ': ' + task.name.color_text + "\n"
+          print ii.to_s.color_index + ': ' + task.name.color_text + "\n"
           print_description(task.description)
         end
       end

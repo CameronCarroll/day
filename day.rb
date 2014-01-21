@@ -34,6 +34,7 @@ CONTEXT_SWITCH_COLOR = 0 # -- Used to declare `Enter/Exit Context'
 STAR_COLOR = 0 # -- Used for the description indicator star
 TITLE_COLOR = 0 # -- Used for any titles
 TEXT_COLOR = 0 # -- Used for basically everything that doesn't fit under the others.
+INDEX_COLOR = 0 # -- Used for the index key which refers to tasks.
 
 # Flag used to configure main printout. Default is no description and an asterisk indicator instead.
 #   :no_description  -- Shows asterisk in main printout when a task has a description.
@@ -80,6 +81,10 @@ class String
 
   def color_text
     colorize(TEXT_COLOR)
+  end
+
+  def color_index
+    colorize(INDEX_COLOR)
   end
 end
 
