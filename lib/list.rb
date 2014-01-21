@@ -141,13 +141,6 @@ See readme.md for a more detailed overview.
       raise ArgumentError, "Choice is out of bounds! Didn't find a task at that index."
     end
 
-    unless @current_context
-      task = find_task_by_number(context_number)
-      puts "Enter context: #{task.name}".color_context_switch
-      print_description(task.description) if task.description
-      config.save_context_switch(context_number)
-    end
-
     time_difference = calculate_time_difference(@context_entrance_time) if @context_entrance_time
 
     if @current_context == context_number
@@ -157,10 +150,7 @@ See readme.md for a more detailed overview.
       print_time(time_difference)
       histclass.save_history(current_task.name, @context_entrance_time, Time.now.getutc)
       config.clear_current_context
-      return
-    end
-
-    if @current_context && @context_entrance_time
+    elsif @current_context && @context_entrance_time
       current_task = find_task_by_number(@current_context)
       puts "Exit context: #{current_task.name}".color_context_switch
       print_time(time_difference)
@@ -170,6 +160,11 @@ See readme.md for a more detailed overview.
       print_description(new_task.description) if new_task.description
       histclass.save_history(current_task.name, @context_entrance_time, Time.now.getutc)
       config.clear_current_context
+      config.save_context_switch(context_number)
+    else
+      task = find_task_by_number(context_number)
+      puts "Enter context: #{task.name}".color_context_switch
+      print_description(task.description) if task.description
       config.save_context_switch(context_number)
     end
   end
