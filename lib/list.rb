@@ -1,3 +1,4 @@
+EMPTY_ERROR_MSG = "(No tasks in list.)"
 class List
 
   attr_accessor :tasks, :current_context, :context_entrance_time
@@ -39,7 +40,7 @@ class List
   #   :description    -- prints out full description
   def print_tasklist(description_flag)
     if @tasks.empty?
-      puts "(No tasks in list.)"
+      puts EMPTY_ERROR_MSG
     else
       ii = 0
       @tasks.each_with_index do |task, ii|
