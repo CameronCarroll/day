@@ -22,7 +22,8 @@ class List
     print_tasklist(DESCRIPTION_FLAG)
     if @current_context
       current_task = find_task_by_number(@current_context)
-      time_difference_minutes = (Time.now.getutc - @context_entrance_time) / 60
+      time_difference = calculate_time_difference
+      time_difference_minutes = time_difference / 60
       time_diff_today = current_task.day_fulfillment + time_difference_minutes if current_task.day_fulfillment
       print "Current task: ".color_title + " (#{@current_context}) ".color_text + current_task.name.color_text
       if current_task.time_estimate
@@ -126,6 +127,10 @@ See readme.md for a more detailed overview.
     puts "Day.rb v#{VERSION}"
   end
 
+  def calculate_time_difference(entrance_time)
+    Time.now.getutc - entrance_time
+  end
+
   def switch(config, histclass, context_number)
 
     if @tasks.empty?
@@ -143,10 +148,11 @@ See readme.md for a more detailed overview.
       config.save_context_switch(context_number)
     end
 
+    time_difference = calculate_time_difference(@context_entrance_time) if @context_entrance_time
+
     if @current_context == context_number
       current_task = find_task_by_number(@current_context)
       puts "Exit Context: #{current_task.name}".color_context_switch
-      time_difference = (Time.now.getutc - @context_entrance_time) / 60
       config.update_fulfillment(current_task.name, time_difference)
       print_time(time_difference)
       histclass.save_history(current_task.name, @context_entrance_time, Time.now.getutc)
@@ -157,7 +163,6 @@ See readme.md for a more detailed overview.
     if @current_context && @context_entrance_time
       current_task = find_task_by_number(@current_context)
       puts "Exit context: #{current_task.name}".color_context_switch
-      time_difference = (Time.now.getutc - @context_entrance_time) / 60
       print_time(time_difference)
       config.update_fulfillment(current_task.name, time_difference)
       new_task = find_task_by_number(context_number)
