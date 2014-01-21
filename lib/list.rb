@@ -50,10 +50,8 @@ class List
         if task.description && (description_flag == :description)
           print_description(task.description)
         end
-        
       end
     end
-    
   end
 
   def print_descriptions
