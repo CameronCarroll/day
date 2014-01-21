@@ -132,17 +132,18 @@ See readme.md for a more detailed overview.
   end
 
   def switch(config, histclass, context_number)
-
     if @tasks.empty?
       raise RuntimeError, "No tasks are defined."
-    end
-
-    unless (0..@tasks.size-1).member?(context_number.to_i)
+    elsif !(0..@tasks.size-1).member?(context_number.to_i)
       raise ArgumentError, "Choice is out of bounds! Didn't find a task at that index."
     end
 
     time_difference = calculate_time_difference(@context_entrance_time) if @context_entrance_time
 
+    # Three behaviors...
+    # 1. Exit current task context
+    # 2. Switch to a different task.
+    # 3. Enter a new task.
     if @current_context == context_number
       current_task = find_task_by_number(@current_context)
       puts "Exit Context: #{current_task.name}".color_context_switch
