@@ -20,6 +20,7 @@ class List
 
   def printout
     print_tasklist(DESCRIPTION_FLAG)
+    puts "\n"
     if @current_context
       current_task = find_task_by_number(@current_context)
       time_difference = calculate_time_difference
@@ -27,10 +28,10 @@ class List
       time_diff_today = current_task.day_fulfillment + time_difference_minutes if current_task.day_fulfillment
       print "Current task: ".color_title + " (#{@current_context}) ".color_text + current_task.name.color_text
       if current_task.time_estimate
-        print_fulfillment(time_difference_minutes, current_task.time_estimate, time_diff_today)
+        print_fulfillment(time_difference, current_task.time_estimate, time_diff_today)
       else
         puts "\n"
-        print_time(time_difference_minutes)
+        print_time(time_difference)
       end
       puts "\n"
     end
@@ -88,6 +89,12 @@ class List
   end
 
   def print_fulfillment(fulfillment, estimate, day_fulfillment)
+    # Convert fulfillment and estimate values into minutes:
+    fulfillment /= 60 if fulfillment
+    estimate /= 60 if estimate
+    # And convert day_fulfillment into whatever is most appropriate.
+    day_fulfillment_string = convert_time(day_fulfillment) if day_fulfillment
+
     if fulfillment
       diff = fulfillment.to_f / estimate.to_f * 100
       print " [#{'%2.1f' % fulfillment}".color_completion + "/#{estimate} minutes]".color_text
@@ -97,7 +104,7 @@ class List
     end
 
     if day_fulfillment
-      puts " {#{'%2.1f' % day_fulfillment} minutes today}".color_completion
+      puts " {#{day_fulfillment_string} today}".color_completion
     else
       puts ""
     end
@@ -105,7 +112,7 @@ class List
 
   def print_time(time_difference)
     print "Time: ".color_title
-    puts ('%.1f' % (time_difference)).to_s.color_text + " minutes.".color_text
+    puts "#{convert_time(time_difference)}.".color_completion
   end
 
   def print_help
@@ -125,6 +132,22 @@ See readme.md for a more detailed overview.
 
   def print_version
     puts "Day.rb v#{VERSION}"
+  end
+
+  def convert_time(seconds)
+    if seconds < 60
+      "#{'%1.0f' % seconds} seconds"
+    elsif seconds >= 60 && seconds < 3600
+      "#{'%2.1f' % (seconds/60)} minutes"
+    elsif seconds >= 3600 && seconds < 86400
+      hours = seconds / 3600
+      leftover_minutes = seconds % 3600 / 60
+      "#{'%1.0f' % hours} hours and #{'%2.1f' % leftover_minutes} minutes"
+    elsif seconds >= 86400
+      days = seconds / 86400
+      leftover_hours = seconds % 86400 / 3600
+      "#{'%1.0f' % days} days and #{'%2.1f' % leftover_hours} hours"
+    end
   end
 
   def calculate_time_difference

@@ -72,7 +72,7 @@ module Parser
           if opts[:time]
             raise ArgumentError, 'You specified more than one time estimate.'
           else
-            opts[:time] = arg
+            opts[:time] = arg.to_i * 60 # convert to seconds for storage
           end
         end
       end

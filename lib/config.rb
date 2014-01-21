@@ -1,3 +1,4 @@
+require 'pry'
 class Configuration < BaseConfig
   attr_accessor :tasks
 
@@ -25,6 +26,7 @@ class Configuration < BaseConfig
 
   def save_task(task, valid_days, description, time_estimate, fulfillment, day_fulfillment)
     puts "Creating new task: ".color_title + task.color_text
+    binding.pry
     @data[:tasks][task] = {:days => valid_days, :description => description, :estimate => time_estimate, :fulfillment => fulfillment, :day_fulfillment => day_fulfillment}
     save(data)
   end
