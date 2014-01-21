@@ -127,8 +127,8 @@ See readme.md for a more detailed overview.
     puts "Day.rb v#{VERSION}"
   end
 
-  def calculate_time_difference(entrance_time)
-    Time.now.getutc - entrance_time
+  def calculate_time_difference
+    Time.now.getutc - @context_entrance_time
   end
 
   def switch(config, histclass, context_number)
@@ -138,7 +138,7 @@ See readme.md for a more detailed overview.
       raise ArgumentError, "Choice is out of bounds! Didn't find a task at that index."
     end
 
-    time_difference = calculate_time_difference(@context_entrance_time) if @context_entrance_time
+    time_difference = calculate_time_difference if @context_entrance_time
 
     # Three behaviors...
     # 1. Exit current task context
