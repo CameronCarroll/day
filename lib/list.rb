@@ -42,17 +42,17 @@ class List
       puts "(No tasks in list.)"
     else
       ii = 0
-    @tasks.each_with_index do |task, ii|
-      print ii.to_s + ': ' + task.name
-      print "*".color_star if task.description && (description_flag == :no_description)
-      print_fulfillment(task.fulfillment, task.time_estimate, task.day_fulfillment)
-      if task.description && (description_flag == :description)
-        print_description(task.description)
-      elsif (description_flag == :description)
-        puts "(No description.)"
+      @tasks.each_with_index do |task, ii|
+        print ii.to_s + ': ' + task.name
+        print "*".color_star if task.description && (description_flag == :no_description)
+        print_fulfillment(task.fulfillment, task.time_estimate, task.day_fulfillment)
+        if task.description && (description_flag == :description)
+          print_description(task.description)
+        elsif (description_flag == :description)
+          puts "(No description.)"
+        end
+        
       end
-      
-    end
     end
     
   end
