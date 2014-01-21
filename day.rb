@@ -101,8 +101,10 @@ def main
   # Handle behaviors:
   if opts[:print]
     list.printout
+
   elsif opts[:chosen_context] && !opts[:delete]
     list.switch(config, histclass, opts[:chosen_context])
+
   elsif opts[:new_task]
     raise ArgumentError, "Duplicate task." if config_data[:tasks].keys.include? opts[:new_task]
     if opts[:valid_days]
@@ -111,6 +113,7 @@ def main
       valid_days = nil
     end
     config.save_task(opts[:new_task], valid_days, opts[:description], opts[:time], nil, [])
+
   elsif opts[:clear]
     if opts[:clear_context]
       task = list.find_task_by_number(opts[:clear_context])
@@ -135,6 +138,7 @@ def main
     else
       raise ArgumentError, "There was no task at that index. (Selection was out of bounds.)"
     end
+
   elsif opts[:info]
     if opts[:info_context]
       task = list.find_task_by_number(opts[:info_context])
@@ -144,10 +148,12 @@ def main
         puts "(No description for #{task.name})".color_text
       end
     else
-      list.print_tasklist(:description)
+      list.print_descriptions
     end
+
   elsif opts[:help]
     list.print_help
+
   elsif opts[:version]
     list.print_version
   else

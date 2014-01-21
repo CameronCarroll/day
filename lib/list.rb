@@ -56,23 +56,20 @@ class List
     
   end
 
-  def print_fulfillment(fulfillment, estimate, day_fulfillment)
-    if fulfillment
-      diff = fulfillment.to_f / estimate.to_f * 100
-      print " [#{'%2.1f' % fulfillment}".color_completion + "/#{estimate} minutes]".color_text
-      print " [#{'%2.1f' % diff}%]".color_completion
-    elsif estimate
-      print " (#{estimate} minute estimate)".color_text
-    end
-
-    if day_fulfillment
-      puts " {#{'%2.1f' % day_fulfillment} minutes today}".color_completion
+  def print_descriptions
+    if @tasks.empty?
+      puts EMPTY_ERROR_MSG
     else
-      puts ""
+      @tasks.each_with_index do |task, ii|
+        if task.description
+          print ii.to_s + ': ' + task.name.color_text + "\n"
+          print_description(task.description)
+        end
+      end
     end
   end
 
-    # Overloaded Function:
+  # Overloaded Function:
   # ------------------------------------------------------
   # 1: print_description(description) --
   #     Declares `Description:' before printing it out.
@@ -89,7 +86,22 @@ class List
       print "#{title}: ".color_title
       puts description.color_text
     end
-      
+  end
+
+  def print_fulfillment(fulfillment, estimate, day_fulfillment)
+    if fulfillment
+      diff = fulfillment.to_f / estimate.to_f * 100
+      print " [#{'%2.1f' % fulfillment}".color_completion + "/#{estimate} minutes]".color_text
+      print " [#{'%2.1f' % diff}%]".color_completion
+    elsif estimate
+      print " (#{estimate} minute estimate)".color_text
+    end
+
+    if day_fulfillment
+      puts " {#{'%2.1f' % day_fulfillment} minutes today}".color_completion
+    else
+      puts ""
+    end
   end
 
   def print_time(time_difference)
@@ -110,7 +122,6 @@ Commands:
 
 See readme.md for a more detailed overview.
     eos
-
   end
 
   def print_version
