@@ -48,8 +48,6 @@ class List
         print_fulfillment(task.fulfillment, task.time_estimate, task.day_fulfillment)
         if task.description && (description_flag == :description)
           print_description(task.description)
-        elsif (description_flag == :description)
-          puts "(No description.)"
         end
         
       end
