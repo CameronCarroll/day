@@ -57,9 +57,25 @@ module Parser
       # Element 0, the name, was already included as opts[:new_task] value
       ARGV[1..-1].each do |arg|
         if arg =~ /\(.+\)/
+          next if opts[:editor]
           opts[:description] = arg
         elsif arg.downcase == EDITOR
           opts[:editor] = true
+          opts[:description] = ''
+          tempfile = 'dayrb_description.tmp'
+          system("vim #{tempfile}")
+          input = ""
+          begin
+            File.open(tempfile, 'r') do |tempfile|
+              while (line = tempfile.gets)
+                opts[:description] << line
+              end
+            end
+          rescue => err
+            puts err
+            err
+          end
+          File.delete tempfile
         elsif arg.downcase.nan?
           opts[:valid_days] ||= true
           key = parse_day_argument(arg)
