@@ -1,3 +1,11 @@
+1.9.1 -- 1/21/14
+-------------------
+
+* Added editor-based descriptions: Define EDITOR in user config section and then include it in the new_task arglist to launch editor and capture description.
+* Times printed out in certain places are converted to minutes/hours/days as appropriate.
+* Added colorization on index key and task names in printout.
+* Some internal upgrades (refactoring, spacing issues, etc.)
+
 1.8.1 -- 12/30/13
 -------------------
 
