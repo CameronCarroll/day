@@ -16,6 +16,8 @@ require_relative 'lib/parser'
 
 VERSION = '1.9.1'
 
+require 'pry'
+
 
 #-------------- User Configuration:
 #-------------- Please DO edit the following to your liking:
@@ -41,6 +43,9 @@ TASK_COLOR = 0 # -- Used for task name in printouts.
 #   :no_description  -- Shows asterisk in main printout when a task has a description.
 #   :description     -- Actually prints out the whole description every time.
 DESCRIPTION_FLAG = :no_description
+
+# Flag to either print out new task list after a deletion or not.
+PRINT_LIST_ON_DELETE = true
 
 # Editor constant. Change to your preferred editor for adding descriptions.
 EDITOR = 'vim'
@@ -146,6 +151,8 @@ def main
         puts "Deleting task: ".color_title + "`#{task.name}'".color_text
         puts "Description was: ".color_title + "`#{task.description}'".color_text if task.description
         config.delete_task(task.name)
+        list.load_tasks config.reload_tasks
+        list.printout if PRINT_LIST_ON_DELETE
       end
     else
       raise ArgumentError, "There was no task at that index. (Selection was out of bounds.)"

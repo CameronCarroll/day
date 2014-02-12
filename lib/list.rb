@@ -5,17 +5,23 @@ class List
 
   def initialize(task_list, current_context, context_entrance_time)
     @tasks = []
+    @tasks = load_tasks(task_list)
+    @current_context = current_context if current_context
+    @context_entrance_time = context_entrance_time if context_entrance_time
+  end
+
+  def load_tasks(task_list)
+    tasks = []
     if task_list
       task_list.each do |task|
         #task.first refers to the key (task name), since the task is stored [key, val] and key = name
         #[:day_fulfillment][0] is the date and [1] is the accumulator.
         task_instance = Task.new(task.first, task[1][:days], task[1][:description], task[1][:estimate], task[1][:fulfillment], task[1][:day_fulfillment])
-        @tasks << task_instance if task_instance.valid_today?
+        tasks << task_instance if task_instance.valid_today?
       end
     end
 
-    @current_context = current_context if current_context
-    @context_entrance_time = context_entrance_time if context_entrance_time
+    @tasks = tasks
   end
 
   def printout

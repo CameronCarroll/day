@@ -65,6 +65,10 @@ class Configuration < BaseConfig
     save(@data)
   end
 
+  def reload_tasks
+    return @data[:tasks]
+  end
+
   def save_self
     save(@data)
   end
