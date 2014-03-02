@@ -16,7 +16,6 @@ require_relative 'lib/parser'
 
 VERSION = '1.9.1'
 
-require 'pry'
 
 
 #-------------- User Configuration:

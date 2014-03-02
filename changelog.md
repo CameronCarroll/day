@@ -1,3 +1,8 @@
+1.10.1 -- ???
+------------------
+
+* Added flag and logic to allow printout out tasklist after deleting something. This is so that you don't look at the old list printout and try to delete something else using the wrong index.
+
 1.9.1 -- 1/21/14
 -------------------
 
