@@ -1,3 +1,5 @@
+require 'abbrev'
+
 module Parser
 
   def self.parse_options
@@ -97,23 +99,11 @@ module Parser
   end
 
   def self.parse_day_argument(day)
-    case day
-    when 'su', 'sun', 'sund', 'sunda', 'sunday', '0'
-      return :sunday
-    when 'm', 'mo', 'mon', 'mond', 'monda', 'monday', '1'
-      return :monday
-    when 'tu', 'tue', 'tues', 'tuesd', 'tuesda', 'tuesday', '2'
-      return :tuesday
-    when 'w', 'we', 'wed', 'wedn', 'wedne', 'wednes', 'wednesd', 'wednesda', 'wednesday', '3'
-      return :wednesday
-    when 'th', 'thu', 'thur', 'thurs', 'thursd', 'thursda', 'thursday', '4'
-      return :thursday
-    when 'f', 'fr', 'fri', 'frid', 'frida', 'friday', '5'
-      return :friday
-    when 'sa', 'sat', 'satu', 'satur', 'saturd', 'saturda', 'saturday', '6'
-      return :saturday
+    abbreviations = Abbrev.abbrev(%w{sunday monday tuesday wednesday thursday friday saturday})
+    if abbreviations.has_key? day
+      return abbreviations[day].to_sym
     else
-      raise ArgumentError, "Couldn't parse which days to enable task. Please double-check glyphs."
+      raise ArgumentError, "Couldn't parse which days to enable task."
     end
   end
 
