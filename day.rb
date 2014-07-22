@@ -51,7 +51,7 @@ EDITOR = 'vim'
 
 #--------------
 
-#[CUT HERE] -------------------------------------------------------------------
+#[CUT HERE] Used in build script. Please don't remove.
 
 #-------------- Monkey-Patch Definitions:
 
@@ -97,86 +97,82 @@ class String
   end
 end
 
-#-------------- Main control method:
+#-------------- Application Logic:
 
-def main
 
-  opts = Parser.parse_options
+opts = Parser.parse_options
 
-  if opts[:chosen_context] && !opts[:delete]
-    histclass = History.new(HISTORY_FILE)
-    history_data = histclass.load
-  end 
+if opts[:chosen_context] && !opts[:delete]
+  histclass = History.new(HISTORY_FILE)
+  history_data = histclass.load
+end 
 
-  config = Configuration.new(CONFIG_FILE)
-  config_data = config.data
+config = Configuration.new(CONFIG_FILE)
+config_data = config.data
 
-  # Generate list from configuration data:
-  list = List.new(config_data[:tasks], config_data[:current_context], config_data[:context_entrance_time]);
+# Generate list from configuration data:
+list = List.new(config_data[:tasks], config_data[:current_context], config_data[:context_entrance_time]);
 
-  # Handle behaviors:
-  if opts[:print]
-    list.printout
+# Handle behaviors:
+if opts[:print]
+  list.printout
 
-  elsif opts[:chosen_context] && !opts[:delete]
-    list.switch(config, histclass, opts[:chosen_context])
+elsif opts[:chosen_context] && !opts[:delete]
+  list.switch(config, histclass, opts[:chosen_context])
 
-  elsif opts[:new_task]
-    raise ArgumentError, "Duplicate task." if config_data[:tasks].keys.include? opts[:new_task]
-    if opts[:valid_days]
-      valid_days = Parser.parse_day_keys(opts)
-    else
-      valid_days = nil
-    end
-    config.save_task(opts[:new_task], valid_days, opts[:description], opts[:time], nil, [])
-
-  elsif opts[:clear]
-    if opts[:clear_context]
-      task = list.find_task_by_number(opts[:clear_context])
-      raise ArgumentError, "Invalid numerical index. (Didn't find a task there.)" unless task
-      puts "Clearing fulfillment data for #{task.name}.".color_text
-      list.clear_fulfillment(config, task.name)
-    else
-      puts 'Clearing all fulfillment data.'.color_text
-      list.clear_fulfillment(config)
-    end
-    
-  elsif opts[:delete]
-    task = list.find_task_by_number(opts[:chosen_context])
-    if task
-      if list.current_context == opts[:chosen_context]
-        raise ArgumentError, "Selected task is the one being timed! Are you sure you want to delete it? If so, check out and try again."
-      else
-        puts "Deleting task: ".color_title + "`#{task.name}'".color_text
-        puts "Description was: ".color_title + "`#{task.description}'".color_text if task.description
-        config.delete_task(task.name)
-        list.load_tasks config.reload_tasks
-        list.printout if PRINT_LIST_ON_DELETE
-      end
-    else
-      raise ArgumentError, "There was no task at that index. (Selection was out of bounds.)"
-    end
-
-  elsif opts[:info]
-    if opts[:info_context]
-      task = list.find_task_by_number(opts[:info_context])
-      if task.description
-        list.print_description(task.name, task.description)
-      else
-        puts "(No description for #{task.name})".color_text
-      end
-    else
-      list.print_descriptions
-    end
-
-  elsif opts[:help]
-    list.print_help
-
-  elsif opts[:version]
-    list.print_version
+elsif opts[:new_task]
+  raise ArgumentError, "Duplicate task." if config_data[:tasks].keys.include? opts[:new_task]
+  if opts[:valid_days]
+    valid_days = Parser.parse_day_keys(opts)
   else
-    raise ArgumentError, "There isn't a response to that command.  "
+    valid_days = nil
   end
-end
+  config.save_task(opts[:new_task], valid_days, opts[:description], opts[:time], nil, [])
 
-main()
+elsif opts[:clear]
+  if opts[:clear_context]
+    task = list.find_task_by_number(opts[:clear_context])
+    raise ArgumentError, "Invalid numerical index. (Didn't find a task there.)" unless task
+    puts "Clearing fulfillment data for #{task.name}.".color_text
+    list.clear_fulfillment(config, task.name)
+  else
+    puts 'Clearing all fulfillment data.'.color_text
+    list.clear_fulfillment(config)
+  end
+  
+elsif opts[:delete]
+  task = list.find_task_by_number(opts[:chosen_context])
+  if task
+    if list.current_context == opts[:chosen_context]
+      raise ArgumentError, "Selected task is the one being timed! Are you sure you want to delete it? If so, check out and try again."
+    else
+      puts "Deleting task: ".color_title + "`#{task.name}'".color_text
+      puts "Description was: ".color_title + "`#{task.description}'".color_text if task.description
+      config.delete_task(task.name)
+      list.load_tasks config.reload_tasks
+      list.printout if PRINT_LIST_ON_DELETE
+    end
+  else
+    raise ArgumentError, "There was no task at that index. (Selection was out of bounds.)"
+  end
+
+elsif opts[:info]
+  if opts[:info_context]
+    task = list.find_task_by_number(opts[:info_context])
+    if task.description
+      list.print_description(task.name, task.description)
+    else
+      puts "(No description for #{task.name})".color_text
+    end
+  else
+    list.print_descriptions
+  end
+
+elsif opts[:help]
+  list.print_help
+
+elsif opts[:version]
+  list.print_version
+else
+  raise ArgumentError, "There isn't a response to that command.  "
+end
