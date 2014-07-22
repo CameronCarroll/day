@@ -1,75 +1,81 @@
-class Configuration < BaseConfig
-  attr_accessor :tasks
+require 'yaml/dbm'
+
+# Config class handles access to our config file, which mostly just stores
+# tasks for the moment.
+# We need to be able to load tasks from the config file, add & delete a task.
+# We also want to keep track of the current context and fulfillments.
+# Schema:
+#   configuration = {
+#       current_context = :task_key,
+#       tasks = {
+#         :key => {
+#           :description => (string),
+#           :active_days => [(keys of active days)],
+#           :estimate => (integer in minutes),
+#           :fulfillment => (integer in minutes)
+#         }
+#       }
+#   }
+class Configuration
+  attr_reader :tasks
 
   def initialize(file_path)
-    super(file_path)
+    @db = YAML::DBM.new(file_path)
+    bootstrap_db if @db.entries.empty?
+    @config = @db.invert
+    @tasks = []
   end
 
-  def load
-    super
-    @tasks = []
-    unless @data[:tasks].empty?
-      @data[:tasks].each do |task|
-        task_yday = task[1][:day_fulfillment][0] if task[1][:day_fulfillment]
-        today_yday = Time.new.yday
-        if task_yday && task_yday == today_yday
-          task_object = Task.new(task.first, task[1][:days], task[1][:description], task[1][:estimate], task[1][:fulfillment], task[1][:day_fulfillment])
-          @tasks << task_object
-        else
-          task_object = Task.new(task.first, task[1][:days], task[1][:description], task[1][:estimate], task[1][:fulfillment], nil)
-          @data[:tasks][task.first][:day_fulfillment] = nil
-        end 
+  # Build array of task objects from their DB records.
+  def load_tasks
+    unless @config[:tasks].empty?
+      @config[:tasks].each do |task|
+        @tasks << Task.new(task.key, task[:description], task[:active_days],
+         task[:estimate], task[:fulfillment])
       end
     end
   end
 
-  def save_task(task, valid_days, description, time_estimate, fulfillment, day_fulfillment)
-    puts "Creating new task: ".color_title + task.color_text
-    @data[:tasks][task] = {:days => valid_days, :description => description, :estimate => time_estimate, :fulfillment => fulfillment, :day_fulfillment => day_fulfillment}
-    save(data)
-  end
-
-  def save_context_switch(context_number)
-    @data[:current_context] = context_number
-    @data[:context_entrance_time] = Time.now.getutc
-    save(data)
-  end
-
-  def clear_current_context()
-    @data[:current_context], @data[:context_entrance_time] = nil, nil
-    save(@data)
-  end
-
-  def update_fulfillment(task_name, time)
-    if @data[:tasks][task_name][:day_fulfillment].nil? || @data[:tasks][task_name][:day_fulfillment].empty?
-      @data[:tasks][task_name][:day_fulfillment] ||= Array.new
-      @data[:tasks][task_name][:day_fulfillment][0] = Time.new.yday
-      @data[:tasks][task_name][:day_fulfillment][1] = time
-    elsif @data[:tasks][task_name][:day_fulfillment][0] == Time.new.yday
-      @data[:tasks][task_name][:day_fulfillment][1] += time
-    else
-      @data[:tasks][task_name][:day_fulfillment][0] = Time.new.yday
-      @data[:tasks][task_name][:day_fulfillment][1] = time
+  # Add a new task to the DB.
+  # Required: task
+  # Optional: description, valid_days, estimate, fulfillment
+  def save_task(task, description, valid_days, estimate, fulfillment)
+    if task
+      @db[task.to_sym] = {:description => description, :valid_days => valid_days,
+       :estimate => estimate, :fulfillment => fulfillment}
     end
+  end
 
-    if @data[:tasks][task_name][:estimate]
-      @data[:tasks][task_name][:fulfillment] ||= 0
-      @data[:tasks][task_name][:fulfillment] += time.to_f
+  # These next two might be candidates for private methods,
+  # where we move some of the work currently being handled by list into
+  # the public methods in this file.
+  # Set DB records to a new current task context.
+  def context_switch(next_key)
+    @db[:context] = next_key if @db[:tasks].has_key?(next_key)
+    @db[:context_entry_time] = Time.now.getutc
+  end
+
+  # Exit context without switching to a new one.
+  def clear_context()
+    @db[:context], @db[:context_entry_time] = nil, nil
+  end
+
+  def update_fulfillment(task_key, time)
+    if @db[:tasks][task_key][:estimate]
+      @db[:tasks][task_key][:fulfillment] ||= 0
+      @db[:tasks][task_key][:fulfillment] += time.to_f
     end
-    
-    save(@data)
   end
 
   def delete_task(task_key)
-    @data[:tasks].delete task_key
-    save(@data)
+    @db[:tasks].delete task_key
   end
 
-  def reload_tasks
-    return @data[:tasks]
-  end
+  private
 
-  def save_self
-    save(@data)
+  def bootstrap_db
+    @db[:context] = nil
+    @db[:context_entry_time] = nil
+    @db[:tasks] = []
   end
 end
