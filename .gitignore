@@ -3,4 +3,6 @@ TODO
 test.rb
 clear.rb
 build/
-TODO
+*.db
+tmp/
+test/
