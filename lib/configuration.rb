@@ -1,6 +1,5 @@
 require 'yaml/dbm'
 require_relative 'task'
-require 'pry'
 
 # Config class handles access to our config file, which mostly just stores
 # tasks for the moment.
@@ -30,7 +29,8 @@ class Configuration
 
   # Add a new task to the DB.
   # Required: task
-  # Optional: description, valid_days, estimate, fulfillment
+  # Optional: description, valid_days, estimate
+  # 'fulfillment' is initialized to nil since this is a new task
   def save_task(task, description, valid_days, estimate)
     if task
       @data['tasks'][task] = {'description' => description, 'valid_days' => valid_days,
@@ -63,6 +63,9 @@ class Configuration
     @data['tasks'].delete task_key
   end
 
+  # Used for tests, but I realize now that by writing the test this way,
+  # we don't actually check the persistence layer! We're just grabbing the
+  # @data we just saved and running it through the load function again.
   def reload()
     @tasks = load_tasks
   end
