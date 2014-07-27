@@ -18,8 +18,9 @@ require_relative 'task'
 #       }
 #   }
 class Configuration
-  attr_reader :tasks, :context, :entry_time
+  attr_reader :data, :tasks, :context, :entry_time
 
+  # @param db [PSYCH::DBM] database (hash-like) initialized and closed by caller.
   def initialize(db)
     @db = db
     @data = @db.to_hash
@@ -28,9 +29,11 @@ class Configuration
   end
 
   # Add a new task to the DB.
-  # Required: task
-  # Optional: description, valid_days, estimate
-  # 'fulfillment' is initialized to nil since this is a new task
+  #
+  # @param task [String] the task name
+  # @param description [String] a text description (optional)
+  # @param valid_days [Array] contains keys corresponding to the valid days, ie ['monday', 'tuesday'] (optional)
+  # @param estimate [String] a time estimate in integer minutes.
   def save_task(task, description, valid_days, estimate)
     if task
       @data['tasks'][task] = {'description' => description, 'valid_days' => valid_days,
@@ -41,8 +44,11 @@ class Configuration
   # These next two might be candidates for private methods,
   # where we move some of the work currently being handled by list into
   # the public methods in this file.
+
   # Set DB records to a new current task context.
-  def context_switch(next_key)
+  #
+  # @param next_key [String] the name of the task to switch to.
+  def switch_to(next_key)
     @data['context'] = next_key if @data['tasks'].has_key?(next_key)
     @data['entry_time'] = Time.now.getutc
   end
@@ -52,6 +58,10 @@ class Configuration
     @data['context'], @data['entry_time'] = nil, nil
   end
 
+  # Add time to a task's fulfillment field.
+  #
+  # @param task_key [String] name of task to update
+  # @param time [String] amount of time (integer minutes) to add
   def update_fulfillment(task_key, time)
     if @data['tasks'][task_key]['estimate']
       @data['tasks'][task_key]['fulfillment'] ||= 0
@@ -59,15 +69,23 @@ class Configuration
     end
   end
 
-  def delete_task(task_key)
+  # Remove a task from list. Doesn't persist until save_data()
+  def delete(task_key)
     @data['tasks'].delete task_key
   end
 
   # Used for tests, but I realize now that by writing the test this way,
   # we don't actually check the persistence layer! We're just grabbing the
   # @data we just saved and running it through the load function again.
+
+  # Reload task objects from config data.
   def reload()
     @tasks = load_tasks
+  end
+
+  # To be called at the very end of the script to write data back into YAML::DBM
+  def save()
+    @db.update(@data)
   end
 
   private
@@ -85,6 +103,7 @@ class Configuration
     return tasks
   end
 
+  # Builds initial structure for the database file.
   def bootstrap_db
     @data['context'] = nil
     @data['entry_time'] = nil
