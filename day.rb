@@ -7,9 +7,7 @@
 require 'yaml'
 require 'fileutils'
 
-require_relative 'lib/baseconfig'
 require_relative 'lib/config'
-require_relative 'lib/history'
 require_relative 'lib/list'
 require_relative 'lib/task'
 require_relative 'lib/parser'
@@ -102,12 +100,8 @@ end
 
 opts = Parser.parse_options
 
-if opts[:chosen_context] && !opts[:delete]
-  histclass = History.new(HISTORY_FILE)
-  history_data = histclass.load
-end 
-
-config = Configuration.new(CONFIG_FILE)
+db = YAML::DBM.new(CONFIG_FILE)
+config = Configuration.new(db)
 config_data = config.data
 
 # Generate list from configuration data:
@@ -176,3 +170,5 @@ elsif opts[:version]
 else
   raise ArgumentError, "There isn't a response to that command.  "
 end
+
+db.close

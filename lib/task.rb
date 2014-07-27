@@ -1,16 +1,13 @@
 class Task
 
-  attr_reader :name, :valid_days, :description, :time_estimate, :fulfillment, :day_fulfillment
+  attr_reader :name, :valid_days, :description, :time_estimate, :fulfillment
 
-  def initialize(name, valid_days, description, time_estimate, fulfillment, day_fulfillment)
+  def initialize(name, description, valid_days, time_estimate, fulfillment)
     @name = name
     @valid_days = valid_days
     @description = description
     @time_estimate = time_estimate
     @fulfillment = fulfillment
-    if day_fulfillment
-      @day_fulfillment = day_fulfillment[1]
-    end
   end
 
   def valid_today?
