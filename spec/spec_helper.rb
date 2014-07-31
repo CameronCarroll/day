@@ -11,3 +11,13 @@ def bootstrap
 	@config.save_task("test", nil, nil, nil)
 	@config.reload
 end
+
+class String
+  def nan?
+    self !~ /^\s*[+-]?((\d+_?)*\d+(\.(\d+_?)*\d+)?|\.(\d+_?)*\d+)(\s*|([eE][+-]?(\d+_?)*\d+)\s*)$/
+  end
+
+  def number?
+    !self.nan?
+  end
+end
