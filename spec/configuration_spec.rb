@@ -33,4 +33,31 @@ describe Configuration do
 		end
 	end
 
+	describe "#lookup_task" do
+		before :each do
+			bootstrap
+		end
+
+		it "should return a task name given a corresponding name" do
+			input = "test"
+			expect(@config.lookup_task(input)).to eq(input)
+		end
+
+		it "should return a task name given a corresponding index" do
+			input = "0"
+			expected = "test"
+			expect(@config.lookup_task(input)).to eq(expected)
+		end
+
+		it "should return nil given a non-task name" do
+			input = "non-task"
+			expect(@config.lookup_task(input)).to eq(nil)
+		end
+
+		it "should return nil given an out-of-bound index" do
+			input = "1"
+			expect(@config.lookup_task(input)).to eq(nil)
+		end
+	end
+
 end

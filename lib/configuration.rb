@@ -88,6 +88,16 @@ class Configuration
     @db.update(@data)
   end
 
+  # Used to verify that a task actually exists and to cross-reference indices to names
+  # @param task [String] can either be a task name or index to reference by
+  def lookup_task(task)
+    if task.number?
+      @tasks.keys[task.to_i]
+    else
+      task if @tasks.has_key? task
+    end
+  end
+
   private
 
   # Build array of task objects from their DB records.
