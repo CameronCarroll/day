@@ -1,62 +1,94 @@
 require 'abbrev'
+require 'pry'
+
+E_NO_SUCH_TASK = "I didn't find any task by that name."
+E_MUST_SPECIFY_TASK = "I need you to specify which task to delete."
 
 module Parser
+  @config = nil
 
-  def self.parse_options
+  class << self
+
+    def parse_options(config)
       opts = {}
-    # Check first argument, which defines behavior.
-    # We can :print, :clear, :delete, select a :chosen_context,
-    # or define a :new_task.
-    case ARGV[0]
-    when nil
-      opts[:print] = true
-    when 'clear', 'c'
-      opts[:clear] = true
-    when 'delete', 'rm'
-      opts[:delete] = true
-    when 'info', 'i'
-      opts[:info] = true
-    when 'help'
-      opts[:help] = true
-    when 'version'
-      opts[:version] = true
-    else
-      # Argument doesn't match any commands...
-      # So we assume it's a new task definition if alphanumeric,
-      # and assume we want to switch context if numeric.
-      if ARGV[0].number?
-        opts[:chosen_context] = ARGV[0]
+      @config = config
+
+      opts[:operation] = case ARGV.first
+      when nil
+        :print
+      when "clear", "c"
+        :clear
+      when "delete", "rm"
+        :delete
+      when "info", "i"
+        :info
+      when "help"
+        :help
+      when "version"
+        :version
       else
-        opts[:new_task] = ARGV[0]
+        handle_non_command(ARGV.first) # could either be a new task or switch to an existing one
+      end
+
+      opts[:task] = case opts[:operation]
+      when :clear, :info
+        check_for_second_argument
+      when :delete
+        demand_second_argument
+      when :switch
+        task = lookup_task(ARGV.first)
+        if task
+          task
+        else
+          raise ArgumentError, E_NO_SUCH_TASK
+        end
+      when :new
+        ARGV.first
+      end
+
+      if opts[:operation] == :new
+        opts = handle_new_task(opts)
+      end
+
+      opts.delete_if { |k, v| v.nil? }
+      return opts
+    end
+
+    private
+
+    def handle_non_command(argument)
+      if argument.number? || lookup_task(argument) # then we switch to that task index or name
+        :switch
+      else # then we assume it's a new task to be created.
+        :new
       end
     end
 
-    if opts[:clear] && ARGV[1]
-      opts[:clear_context] = ARGV[1]
+    def check_for_second_argument
+      if ARGV[1]
+        task = lookup_task(ARGV[1])
+        if task
+          task
+        else
+          raise ArgumentError, E_NO_SUCH_TASK
+        end
+      end
     end
 
-    # If delete is true, grab a context number from ARG 1. 
-    if opts[:delete]
-      delete_error_msg = "You didn't specify what you want to delete. Please supply context number after 'delete' keyword. (i.e. 'day delete 3')"
-      if ARGV[1]
-        # Have to check if it's a valid context somewhere else...
-        opts[:chosen_context] = ARGV[1]
+    def demand_second_argument
+      argument = check_for_second_argument
+      if argument
+        argument
       else
-        raise ArgumentError, delete_error_msg
+        raise ArgumentError, E_MUST_SPECIFY_TASK
       end
     end
 
-    if opts[:info]
-      if ARGV[1]
-        opts[:info_context] = ARGV[1]
-      end
+    def lookup_task(name)
+      @config.lookup_task(name)
     end
 
-    # When we define a new task we can specify the days and time inline.
-    # For each additional argument, if it's numeric, assume we're specifying the time.
-    # If it's alpha, check it against our list of monographs/digraphs/etc
-    if opts[:new_task]
-      # Element 0, the name, was already included as opts[:new_task] value
+    def handle_new_task(opts)
       ARGV[1..-1].each do |arg|
         if arg =~ /\(.+\)/
           next if opts[:editor]
@@ -65,57 +97,59 @@ module Parser
           opts[:editor] = true
           opts[:description] = ''
           tempfile = 'dayrb_description.tmp'
-          system("vim #{tempfile}")
+          system("#{EDITOR} #{tempfile}")
           input = ""
           begin
             File.open(tempfile, 'r') do |tempfile|
               while (line = tempfile.gets)
-                opts[:description] << line
+                opts[:description] << line.chomp
               end
             end
+
+            File.delete tempfile
           rescue => err
-            puts err
-            err
+            raise ArgumentError, err
           end
-          File.delete tempfile
         elsif arg.downcase.nan?
-          opts[:valid_days] ||= true
+          opts[:days] ||= []
           key = parse_day_argument(arg)
-          if opts[key]
+          if opts[:days].include? key
             raise ArgumentError, "You specified a single day (#{key}) more than once."
           else
-            opts[key] = true
+            opts[:days] << key
           end
         else
-          if opts[:time]
+          if opts[:estimate]
             raise ArgumentError, 'You specified more than one time estimate.'
           else
-            opts[:time] = arg.to_i * 60 # convert to seconds for storage
+            opts[:estimate] = arg.to_i * 60# convert to seconds for storage
           end
         end
       end
-    end
-    return opts
-  end
 
-  def self.parse_day_argument(day)
-    abbreviations = Abbrev.abbrev(%w{sunday monday tuesday wednesday thursday friday saturday})
-    if abbreviations.has_key? day
-      return abbreviations[day].to_sym
-    else
-      raise ArgumentError, "Couldn't parse which days to enable task."
+      return opts
     end
-  end
 
-  def self.parse_day_keys(opts)
-    days = []
-    opts.each do |key, value|
-      continue unless value
-      case key
-      when :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday
-        days << key
+    def parse_day_argument(day)
+      abbreviations = Abbrev.abbrev(%w{sunday monday tuesday wednesday thursday friday saturday})
+      if abbreviations.has_key? day
+        return abbreviations[day].to_sym
+      else
+        raise ArgumentError, "Couldn't parse which days to enable task."
       end
     end
-    return days
+
+    def parse_day_keys(opts)
+      days = []
+      opts.each do |key, value|
+        continue unless value
+        case key
+        when :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday
+          days << key
+        end
+      end
+      return days
+    end
+
   end
 end
