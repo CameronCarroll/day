@@ -84,6 +84,34 @@ describe Configuration do
 		end
 	end
 
+	describe "#clear_fulfillment" do
+		before :each do
+			bootstrap
+		end
+
+		it "should clear fulfillment for a specified task" do
+			@config.switch_to("test")
+			@config.reload
+			@config.clear_context
+			@config.reload
+			expect(@config.data['tasks']['test']['fulfillment']).to be_truthy
+			@config.clear_fulfillment("test")
+			@config.reload
+			expect(@config.data['tasks']['test']['fulfillment']).not_to be_truthy
+		end
+
+		it "should clear fulfillment for all tasks otherwise" do
+			@config.switch_to("test")
+			@config.reload
+			@config.clear_context
+			@config.reload
+			expect(@config.data['tasks']['test']['fulfillment']).to be_truthy
+			@config.clear_fulfillment(nil)
+			@config.reload
+			expect(@config.data['tasks']['test']['fulfillment']).not_to be_truthy
+		end
+	end
+
 	describe "#lookup_task" do
 		before :each do
 			bootstrap

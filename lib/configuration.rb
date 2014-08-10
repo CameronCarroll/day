@@ -53,14 +53,25 @@ class Configuration
     @data['context'], @data['entry_time'] = nil, nil
   end
 
+  # Clear fulfillment for one or all tasks.
+  #
+  # @param task [String] valid task name to specify action for (defaults to all otherwise)
+  def clear_fulfillment(task)
+    if task
+      clear_fulfillment_for task
+    else
+      @data['tasks'].each do |task, task_data|
+        clear_fulfillment_for task
+      end
+    end
+  end
+
   # Remove a task from list. Doesn't persist until save_data()
+  #
+  # @param task_key [String] Valid task name to delete.
   def delete(task_key)
     @data['tasks'].delete task_key
   end
-
-  # Used for tests, but I realize now that by writing the test this way,
-  # we don't actually check the persistence layer! We're just grabbing the
-  # @data we just saved and running it through the load function again.
 
   # Reload class objects from config data.
   # Used during testing.
@@ -76,6 +87,7 @@ class Configuration
   end
 
   # Used to verify that a task actually exists and to cross-reference indices to names
+  #
   # @param task [String] can either be a task name or index to reference by
   def lookup_task(task)
     if task.number?
@@ -124,5 +136,12 @@ class Configuration
   def cap_current_fulfillment
     @data['tasks'][@data['context']]['fulfillment'] ||= 0
     @data['tasks'][@data['context']]['fulfillment'] += Time.now - @data['entry_time']
+  end
+
+  # Actually modify fulfillment data for a task.
+  #
+  # @param task [String] Valid task name to verify data for.
+  def clear_fulfillment_for(task)
+    @data['tasks'][task]['fulfillment'] = nil
   end
 end
