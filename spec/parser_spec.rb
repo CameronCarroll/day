@@ -67,12 +67,12 @@ describe Parser do
 		context "for the info command" do
 			it "should set command as :info" do
 				ARGV = ["info"]
-				expect(Parser.parse_options(@config)).to eq({:operation => :info})
+				expect(Parser.parse_options(@config)).to eq({:operation => :print_info})
 			end
 
 			it "should also accept a specific task" do
 				ARGV = ["info", "test"]
-				expect(Parser.parse_options(@config)).to eq({:operation => :info, :task => "test"})
+				expect(Parser.parse_options(@config)).to eq({:operation => :print_info, :task => "test"})
 			end
 
 			it "should raise if task doesn't exist" do
@@ -84,14 +84,14 @@ describe Parser do
 		context "for the help command" do
 			it "should set command as :help on 'help'" do
 				ARGV = ["help"]
-				expect(Parser.parse_options(@config)).to eq({:operation => :help})
+				expect(Parser.parse_options(@config)).to eq({:operation => :print_help})
 			end
 		end
 
 		context "for the version command" do
 			it "should set command as :version on 'version'" do
 				ARGV = ["version"]
-				expect(Parser.parse_options(@config)).to eq({:operation => :version})
+				expect(Parser.parse_options(@config)).to eq({:operation => :print_version})
 			end
 		end
 

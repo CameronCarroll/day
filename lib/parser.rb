@@ -21,17 +21,17 @@ module Parser
       when "delete", "rm"
         :delete
       when "info", "i"
-        :info
+        :print_info
       when "help"
-        :help
+        :print_help
       when "version"
-        :version
+        :print_version
       else
         handle_non_command(ARGV.first) # could either be a new task or switch to an existing one
       end
 
       opts[:task] = case opts[:operation]
-      when :clear, :info
+      when :clear, :print_info
         check_for_second_argument
       when :delete
         demand_second_argument
