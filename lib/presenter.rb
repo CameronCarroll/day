@@ -11,7 +11,11 @@ module Presenter
 			else
 				print_task_list(config.tasks)
 			end
-			print_current_context(config.context) if config.context
+			context = config.data['context']
+			if context
+				time = (Time.now - config.data['entry_time']) / 60
+				print_current_context(context, time)
+			end
 		end
 
 		def print_info(config, task)
@@ -83,6 +87,10 @@ module Presenter
 	  def print_description(task_name, task_object)
 	  	print "Description for #{task_name}: "
 	  	puts task_object.description
+	  end
+
+	  def print_current_context(context, time)
+	  	puts "Current task: #{context} (#{'%2.1f' % time} minutes)"
 	  end
 
 	  def print_error_empty()
