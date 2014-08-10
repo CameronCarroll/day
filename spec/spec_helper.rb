@@ -10,7 +10,8 @@ def bootstrap
 	FileUtils.rm FULL_FILE_PATH if File.exist? FULL_FILE_PATH
 	@db = YAML::DBM.new(FILE_PATH)
 	@config = Configuration.new(@db)
-	@config.save_task("test", nil, nil, nil)
+  opts = {:task => "test"}
+  @config.new_task(opts)
 	@config.reload
 end
 

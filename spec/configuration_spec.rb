@@ -16,18 +16,16 @@ describe Configuration do
 		end
 	end
 
-	describe "#save_task" do
+	describe "#new_task" do
 		before :each do
 			bootstrap
 		end
 
 		it "adds a task to the database" do
 			test_name = 'test_task_name'
-			test_description = 'some description'
-			valid_days = nil
-			estimate = nil
+			opts = {:task => test_name, :description => 'some description'}
 			expect(@config.tasks[test_name]).to be(nil)
-			@config.save_task(test_name, test_description, valid_days, estimate)
+			@config.new_task(opts)
 			@config.reload
 			expect(@config.tasks[test_name].name).to eq(test_name)
 		end

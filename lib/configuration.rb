@@ -28,17 +28,10 @@ class Configuration
     @tasks = load_tasks
   end
 
-  # Add a new task to the DB.
-  #
-  # @param task [String] the task name
-  # @param description [String] a text description (optional)
-  # @param valid_days [Array] contains keys corresponding to the valid days, ie ['monday', 'tuesday'] (optional)
-  # @param estimate [String] a time estimate in integer minutes.
-  def save_task(task, description, valid_days, estimate)
-    if task
-      @data['tasks'][task] = {'description' => description, 'valid_days' => valid_days,
-       'estimate' => estimate, 'fulfillment' => nil}
-    end
+  # Interface to save_task which decomposes opts hash.
+  # @param opts [Hash] options hash containing input data
+  def new_task(opts)
+    save_task(opts[:task], opts[:description], opts[:days], opts[:estimate])
   end
 
   # These next two might be candidates for private methods,
@@ -111,6 +104,19 @@ class Configuration
     end
 
     return tasks
+  end
+
+  # Add a new task to the DB.
+  #
+  # @param task [String] the task name
+  # @param description [String] a text description (optional)
+  # @param valid_days [Array] contains keys corresponding to the valid days, ie ['monday', 'tuesday'] (optional)
+  # @param estimate [String] a time estimate in integer minutes.
+  def save_task(task, description, valid_days, estimate)
+    if task
+      @data['tasks'][task] = {'description' => description, 'valid_days' => valid_days,
+       'estimate' => estimate, 'fulfillment' => nil}
+    end
   end
 
   # Builds initial structure for the database file.
