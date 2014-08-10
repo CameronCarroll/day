@@ -18,6 +18,12 @@ def bootstrap_task(name)
   @config.reload
 end
 
+def bootstrap_with_context
+  bootstrap
+  @config.switch_to("test")
+  @config.save
+end
+
 class String
   def nan?
     self !~ /^\s*[+-]?((\d+_?)*\d+(\.(\d+_?)*\d+)?|\.(\d+_?)*\d+)(\s*|([eE][+-]?(\d+_?)*\d+)\s*)$/

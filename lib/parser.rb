@@ -37,7 +37,10 @@ module Parser
         demand_second_argument
       when :switch
         task = lookup_task(ARGV.first)
-        if task
+        if task && @config.data['context'] == task
+          opts[:operation] = :leave
+          nil
+        elsif task
           task
         else
           raise ArgumentError, E_NO_SUCH_TASK

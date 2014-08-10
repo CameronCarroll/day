@@ -171,5 +171,16 @@ describe Parser do
 			# 		:editor => true})
 			# end
 		end
+
+		context "for the leave command" do
+			before :each do
+				bootstrap_with_context
+			end
+
+			it "should set :leave command on repeated context" do
+				ARGV = ["test"]
+				expect(Parser.parse_options(@config)).to eq({:operation => :leave})
+			end
+		end
 	end
 end
