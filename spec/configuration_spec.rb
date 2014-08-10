@@ -31,6 +31,59 @@ describe Configuration do
 		end
 	end
 
+	describe "#switch_to" do
+		before :each do
+			bootstrap
+		end
+
+		it "should enter a new context (no current)" do
+			expect(@config.data['context']).to eq(nil)
+			@config.switch_to("test")
+			expect(@config.data['context']).to eq("test")
+		end
+
+		it "should enter a new context (given a current one)" do
+			bootstrap_task("test2")
+			@config.switch_to("test")
+			expect(@config.data['context']).to eq("test")
+			@config.switch_to("test2")
+			expect(@config.data['context']).to eq("test2")
+		end
+	end
+
+	describe "#delete" do
+		before :each do
+			bootstrap
+		end
+
+		it "should remove a task from data" do
+			expect(@config.data['tasks']['test']).to be_truthy
+			@config.delete("test")
+			expect(@config.data['tasks']['test']).not_to be_truthy
+		end
+	end
+
+	describe "#clear_context" do
+		before :each do
+			bootstrap
+		end
+
+		it "should clear context given a current one" do
+			@config.switch_to("test")
+			expect(@config.data['context']).to eq("test")
+			@config.reload
+			@config.clear_context
+			expect(@config.data['context']).to eq(nil)
+		end
+
+		it "should add time to the fulfillment" do
+			@config.switch_to("test")
+			@config.reload
+			@config.clear_context
+			expect(@config.data['tasks']['test']['fulfillment']).to be_truthy
+		end
+	end
+
 	describe "#lookup_task" do
 		before :each do
 			bootstrap

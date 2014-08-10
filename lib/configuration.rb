@@ -42,24 +42,15 @@ class Configuration
   #
   # @param next_key [String] the name of the task to switch to.
   def switch_to(next_key)
+    cap_current_fulfillment if @context
     @data['context'] = next_key if @data['tasks'].has_key?(next_key)
     @data['entry_time'] = Time.now.getutc
   end
 
   # Exit context without switching to a new one.
   def clear_context()
+    cap_current_fulfillment
     @data['context'], @data['entry_time'] = nil, nil
-  end
-
-  # Add time to a task's fulfillment field.
-  #
-  # @param task_key [String] name of task to update
-  # @param time [String] amount of time (integer minutes) to add
-  def update_fulfillment(task_key, time)
-    if @data['tasks'][task_key]['estimate']
-      @data['tasks'][task_key]['fulfillment'] ||= 0
-      @data['tasks'][task_key]['fulfillment'] += time.to_f
-    end
   end
 
   # Remove a task from list. Doesn't persist until save_data()
@@ -71,14 +62,17 @@ class Configuration
   # we don't actually check the persistence layer! We're just grabbing the
   # @data we just saved and running it through the load function again.
 
-  # Reload task objects from config data.
+  # Reload class objects from config data.
+  # Used during testing.
   def reload()
     @tasks = load_tasks
+    @context = @data['context']
+    @entry_time = @data['entry_time']
   end
 
   # To be called at the very end of the script to write data back into YAML::DBM
   def save()
-    @db.update(@data)
+    @db.replace(@data)
   end
 
   # Used to verify that a task actually exists and to cross-reference indices to names
@@ -124,5 +118,11 @@ class Configuration
     @data['context'] = nil
     @data['entry_time'] = nil
     @data['tasks'] = {}
+  end
+
+   # Add the elapsed time since entering a context. (Used when exiting that context.)
+  def cap_current_fulfillment
+    @data['tasks'][@context]['fulfillment'] ||= 0
+    @data['tasks'][@context]['fulfillment'] += Time.now - @entry_time
   end
 end
