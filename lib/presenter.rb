@@ -76,6 +76,26 @@ See readme.md for a more detailed overview.
 	  	end
 	  end
 
+	  # Announces a switch to a new task and the amount of time spent on the old one.
+	  def announce_switch(task, old_task, old_time)
+	  	puts "Switching to new task, #{task}"
+	  	if old_task && old_time
+	  		puts "(Spent #{convert_time_with_suffix old_time} on #{old_task})"
+	  	end
+	  end
+
+	  # Announces that we leave current context, prints out time spent.
+	  # Used when not starting a new task.
+	  def announce_leave_context(old_task, old_time)
+	  	puts "Stopping tracking for #{old_task}"
+	  	puts "(Spent #{convert_time_with_suffix old_time})"
+	  end
+
+	  # Announces the creation of a new task.
+	  def announce_new_task(task)
+	  	puts "Added new task, #{task}"
+	  end
+
 		private
 
 		def print_task_list(tasks)
