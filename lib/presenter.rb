@@ -5,6 +5,7 @@
 module Presenter
 	class << self
 
+		# Prints out task list and current context, if applicable.
 		def print_list(config)
 			if config.tasks.empty?
 				print_error_empty
@@ -18,6 +19,8 @@ module Presenter
 			end
 		end
 
+		# Prints info for a specific task if provided.
+		# If not, prints out every description for tasks that have one.
 		def print_info(config, task)
 			if task
 				task_object = config.tasks[task]
@@ -33,23 +36,35 @@ module Presenter
 			end
 		end
 
+		# Prints out program help string
 		def print_help
 	    puts <<-eos
-	Usage: day.rb <command> [<args>]
+Usage: day.rb <command> [<args>]
 
-	Commands:
-	  (no command)              Prints out task list for the day
-	  (name of new task)        Creates a new task
-	  (index of existing task)  Checks in or out of task according to numerical index
-	  delete                    Remove a task
-	  info                      Print out descriptions for one or all tasks
+Commands:
+  (no command)        Prints out task list for the day
+  (nonexisting task)  Creates a new task
+  (existing task)     Start tracking time for named task.
+  delete (task)       Remove a task
+  info                Print all descriptions
+  info (task)         Print a specific description
+  clear               Clear fulfillment for all tasks.
+  clear (task)        Clear fulfillment for a specific task.
 
-	See readme.md for a more detailed overview.
+Refer to a task either by its name or index.
+See readme.md for a more detailed overview.
 	    eos
 	  end
 
+	  # Prints out the VERSION constant
 		def print_version
 	    puts "Day.rb v#{VERSION}"
+	  end
+
+	  # Announces task has been deleted and prints its description if applicable.
+	  def announce_deletion(task, description)
+	  	puts "Deleted #{task}".color_text
+	  	puts "Description was: #{description}" if description
 	  end
 
 		private
