@@ -122,7 +122,7 @@ class Configuration
 
    # Add the elapsed time since entering a context. (Used when exiting that context.)
   def cap_current_fulfillment
-    @data['tasks'][@context]['fulfillment'] ||= 0
-    @data['tasks'][@context]['fulfillment'] += Time.now - @entry_time
+    @data['tasks'][@data['context']]['fulfillment'] ||= 0
+    @data['tasks'][@data['context']]['fulfillment'] += Time.now - @data['entry_time']
   end
 end
