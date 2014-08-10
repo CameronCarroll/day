@@ -111,6 +111,10 @@ describe Parser do
 				expect {Parser.parse_options(@config)}.to raise_error(ArgumentError)
 			end
 
+			it "should accept alpha tasks" do
+				ARGV = ["test"]
+				expect(Parser.parse_options(@config)).to eq({:operation => :switch, :task => "test"})
+			end
 		end
 
 		context "for the new command" do
