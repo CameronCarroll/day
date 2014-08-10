@@ -13,7 +13,7 @@ module Presenter
 			end
 			context = config.data['context']
 			if context
-				time = (Time.now - config.data['entry_time']) / 60
+				time = (Time.now - config.data['entry_time'])
 				print_current_context(context, time)
 			end
 		end
@@ -70,18 +70,17 @@ module Presenter
 		end
 
 		def print_fulfillment(fulfillment, estimate)
-	    # Convert fulfillment and estimate values into minutes:
-	    fulfillment /= 60 if fulfillment
-	    estimate /= 60 if estimate
-
-
-	    if fulfillment
-	      diff = fulfillment.to_f / estimate.to_f * 100
-	      print " [#{'%2.1f' % fulfillment}".color_completion + "/#{estimate} minutes]".color_text
-	      print " [#{'%2.1f' % diff}%]".color_completion
-	    elsif estimate
-	      print " (#{estimate} minute estimate)".color_text
-	    end
+			if fulfillment
+				if estimate
+					diff = fulfillment.to_f / estimate.to_f * 100
+					print " [#{convert_time(fulfillment)}".color_completion + "/#{convert_time_with_suffix(estimate)}]".color_text
+					print " [#{'%2.1f' % diff}%]".color_completion
+				else
+					print " (#{convert_time_with_suffix(fulfillment)})"
+				end
+			elsif estimate
+				print " (#{convert_time_with_suffix(estimate)} estimate)"
+			end
 	  end
 
 	  def print_description(task_name, task_object)
@@ -90,7 +89,36 @@ module Presenter
 	  end
 
 	  def print_current_context(context, time)
-	  	puts "Current task: #{context} (#{'%2.1f' % time} minutes)"
+	  	puts "Current task: #{context} (#{convert_time_with_suffix(time)})"
+	  end
+
+	  def convert_time(seconds)
+	  	if seconds < 60
+	  		return ('%1.0f' % seconds)
+	  	elsif seconds >= 60 && seconds < 3600
+	  		return ('%2.1f' % (seconds/60))
+	  	elsif seconds >= 3600 && seconds < 86400
+	  		hours = seconds / 3600
+	      leftover_minutes = seconds % 3600 / 60
+	      return ('%1.0f' % hours), ('%2.1f' % leftover_minutes)
+	  	elsif seconds >= 86400
+	  		days = seconds / 86400
+	      leftover_hours = seconds % 86400 / 3600
+	      return ('%1.0f' % days), ('%2.1f' % leftover_hours)
+	  	end
+	  end
+
+	  def convert_time_with_suffix(seconds)
+	  	first_result, second_result = convert_time(seconds)
+	    if seconds < 60
+	      "#{first_result} seconds"
+	    elsif seconds >= 60 && seconds < 3600
+	      "#{first_result} minutes"
+	    elsif seconds >= 3600 && seconds < 86400
+	      "#{first_result} hours and #{second_result} minutes"
+	    elsif seconds >= 86400
+	      "#{first_result} days and #{second_result} hours"
+	    end
 	  end
 
 	  def print_error_empty()
