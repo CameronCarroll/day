@@ -64,7 +64,16 @@ See readme.md for a more detailed overview.
 	  # Announces task has been deleted and prints its description if applicable.
 	  def announce_deletion(task, description)
 	  	puts "Deleted #{task}".color_text
-	  	puts "Description was: #{description}" if description
+	  	puts "Description was: #{description}".color_text if description
+	  end
+
+	  # Announces that either a task or all tasks have had fulfillment cleared.
+	  def announce_clear(task)
+	  	if task
+	  		puts "Cleared fulfillment for #{task}".color_text
+	  	else
+	  		puts "Cleared fulfillment for all tasks".color_text
+	  	end
 	  end
 
 		private
