@@ -1,29 +1,26 @@
 #!/usr/bin/ruby
 
-# Script File: day.rb
-# Author: Cameron Carroll; Created July 2013
-# Purpose: Main file for day.rb to-do & time tracking app.
+# DayRB Main File
+# Day.rb is a minimalistic command-line to-do and time-tracking application.
+# Created in July 2013
+# See 'day.rb help' for usage.
+#
+# MIT License; See LICENSE file; Cameron Carroll 2014
 
-require 'yaml'
-require 'fileutils'
-
-require_relative 'lib/config'
-require_relative 'lib/list'
-require_relative 'lib/task'
+require_relative 'lib/configuration'
+require_relative 'lib/tasklist'
 require_relative 'lib/parser'
+require_relative 'lib/presenter'
 
-VERSION = '1.9.1'
-
-
+VERSION = '2.0.0'
 
 #-------------- User Configuration:
 #-------------- Please DO edit the following to your liking:
 
 # Configuration File: Stores tasks and their data
-CONFIG_FILE = ENV['HOME'] + '/.config/dayrb/daytodo'
-# History File: Technically unused, not sure if it's still in-scope for the project, pending possible removal.
-#               But is supposed to keep track of task completion in the long-term.
-HISTORY_FILE = ENV['HOME'] + '/.config/dayrb/daytodo_history'
+#CONFIG_FILE = ENV['HOME'] + '/.config/dayrb/daytodo'
+CONFIG_FILE = ENV['HOME'] + '/code/day/tmp/config'
+
 # Colorization: 
 # Use ANSI color codes...
 # (See http://bluesock.org/~willg/dev/ansi.html for codes.)
@@ -35,14 +32,6 @@ TITLE_COLOR = 0 # -- Used for any titles
 TEXT_COLOR = 0 # -- Used for basically everything that doesn't fit under the others.
 INDEX_COLOR = 0 # -- Used for the index key which refers to tasks.
 TASK_COLOR = 0 # -- Used for task name in printouts.
-
-# Flag used to configure main printout. Default is no description and an asterisk indicator instead.
-#   :no_description  -- Shows asterisk in main printout when a task has a description.
-#   :description     -- Actually prints out the whole description every time.
-DESCRIPTION_FLAG = :no_description
-
-# Flag to either print out new task list after a deletion or not.
-PRINT_LIST_ON_DELETE = true
 
 # Editor constant. Change to your preferred editor for adding descriptions.
 EDITOR = 'vim'
@@ -97,78 +86,55 @@ end
 
 #-------------- Application Logic:
 
-
-opts = Parser.parse_options
-
 db = YAML::DBM.new(CONFIG_FILE)
 config = Configuration.new(db)
-config_data = config.data
+opts = Parser.parse_options(config)
 
-# Generate list from configuration data:
-list = List.new(config_data[:tasks], config_data[:current_context], config_data[:context_entrance_time]);
+# Build task objects and separate into two lists, valid today and all tasks.
+tasklist_object = Tasklist.new(config)
+all_tasks = tasklist_object.all_tasks
+valid_tasks = tasklist_object.valid_tasks
 
-# Handle behaviors:
-if opts[:print]
-  list.printout
-
-elsif opts[:chosen_context] && !opts[:delete]
-  list.switch(config, histclass, opts[:chosen_context])
-
-elsif opts[:new_task]
-  raise ArgumentError, "Duplicate task." if config_data[:tasks].keys.include? opts[:new_task]
-  if opts[:valid_days]
-    valid_days = Parser.parse_day_keys(opts)
-  else
-    valid_days = nil
-  end
-  config.save_task(opts[:new_task], valid_days, opts[:description], opts[:time], nil, [])
-
-elsif opts[:clear]
-  if opts[:clear_context]
-    task = list.find_task_by_number(opts[:clear_context])
-    raise ArgumentError, "Invalid numerical index. (Didn't find a task there.)" unless task
-    puts "Clearing fulfillment data for #{task.name}.".color_text
-    list.clear_fulfillment(config, task.name)
-  else
-    puts 'Clearing all fulfillment data.'.color_text
-    list.clear_fulfillment(config)
-  end
-  
-elsif opts[:delete]
-  task = list.find_task_by_number(opts[:chosen_context])
-  if task
-    if list.current_context == opts[:chosen_context]
-      raise ArgumentError, "Selected task is the one being timed! Are you sure you want to delete it? If so, check out and try again."
-    else
-      puts "Deleting task: ".color_title + "`#{task.name}'".color_text
-      puts "Description was: ".color_title + "`#{task.description}'".color_text if task.description
-      config.delete_task(task.name)
-      list.load_tasks config.reload_tasks
-      list.printout if PRINT_LIST_ON_DELETE
-    end
-  else
-    raise ArgumentError, "There was no task at that index. (Selection was out of bounds.)"
-  end
-
-elsif opts[:info]
-  if opts[:info_context]
-    task = list.find_task_by_number(opts[:info_context])
-    if task.description
-      list.print_description(task.name, task.description)
-    else
-      puts "(No description for #{task.name})".color_text
-    end
-  else
-    list.print_descriptions
-  end
-
-elsif opts[:help]
-  list.print_help
-
-elsif opts[:version]
-  list.print_version
+# Include either all days ("-a" flag) or just valid daily tasks:
+if opts[:all]
+  tasklist = all_tasks
 else
-  raise ArgumentError, "There isn't a response to that command.  "
+  tasklist = valid_tasks
 end
 
+# Easier (named) access to config and opts:
+new_context = opts[:task]
+current_context = config.data['context']
+old_time = Time.now - config.data['entry_time'] if config.data['entry_time']
+
+# Take action based on operation:
+case opts[:operation]
+when :print
+  Presenter.print_list(tasklist, current_context, old_time)
+when :print_info
+  Presenter.print_info(tasklist, new_context)
+when :print_help
+  Presenter.print_help
+when :print_version
+  Presenter.print_version
+when :new
+  Presenter.announce_new_task(new_context)
+  config.new_task(opts)
+when :switch
+  Presenter.announce_switch(new_context, current_context, old_time)
+  config.switch_to(new_context)
+when :clear
+  Presenter.announce_clear(new_context)
+  config.clear_fulfillment(new_context)
+when :leave
+  Presenter.announce_leave_context(current_context, old_time)
+  config.clear_context
+when :delete
+  Presenter.announce_deletion(new_context, config.data['tasks'][new_context]['description'])
+  config.delete(new_context)
+else
+  Presenter.print_error_unknown
+end
+
+config.save
 db.close
