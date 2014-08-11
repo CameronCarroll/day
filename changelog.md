@@ -1,7 +1,23 @@
-1.10.1 -- ???
+2.0.0 -- 08/11/14
 ------------------
 
-* Added flag and logic to allow printout out tasklist after deleting something. This is so that you don't look at the old list printout and try to delete something else using the wrong index.
+### Feature Additions:
+
+* Added "-a" / "-A" flag, for "all tasks." This allows you to see tasks that aren't enabled for today.
+* You can now refer to tasks by name rather than only by numerical index.
+
+### Deprecations:
+
+* Removed DESCRIPTION flag and deprecated its functionality, which would print full descriptions instead of asterisk in the tasklist.
+
+### Internal Changes:
+
+* Major internal rewrite; Disassembled god class (List) and also significantly simplified the configuration. (One module and YAML/DBM instead of three modules and hand-rolled YAML file access.)
+* Separated all printing logic into presenter module.
+* Separated all DB access logic into configuration module.
+* Created Tasklist to manage task objects and maintain lists of valid tasks and all tasks.
+* Wrote specs for Configuration and Parser.
+* Added YARD-style documentation to all methods and classes.
 
 1.9.1 -- 1/21/14
 -------------------

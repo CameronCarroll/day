@@ -1,85 +1,53 @@
 day.rb
 ======
-(Version 1.9.1 -- 1/21/14)
+(Version 2.0.0 -- August 2014)
 
-A command-line time tracking / to-do application.
+A command-line to-do & time-tracking application.
 
 * Define & describe tasks, and set time estimates for yourself.
 * Check in or out of tasks to track time spent.
 
 Requirements:
 -------------
-* Ruby (Tested with 2.0.0)
+* Ruby (Tested with 2.1.2)
 
-Usage: 
-------
-* Create a new task:
+Installation:
+-------------
 
-        day.rb new_task_name
-        
-* Create tasks for certain days & expect a time in minutes
+### Method 1: Download a Release (One File)
 
-        day.rb write_lab_report m w 120
-        (or)
-        day.rb add_new_feature 45
-        
-        --> Creating new task: add_new_feature
-        
+* Head on over to the [Releases Page](https://github.com/sanarothe/day/releases)
+* Download the latest "one-file distributable" version of day.rb
+* Stick it in your favorite bin folder. (~/bin)
+* Chmod it to be executable (chmod +x ~/bin/day.rb)
 
-* Check into a task while you're working on it
+### Method 2: Clone the Repository (Entire Folder)
 
-        day.rb
-        --> Day.rb (1.9.1)
-        --> Today's tasks:
-        -->
-        --> 0: dayrb_add_descriptions (60 minute estimate)
-        --> 1: matl_quiz_post9 (15 minute estimate)
-        --> 2: matl_hw_ch9 (55 minute estimate)
-        
-        day.rb 0
-        --> Enter context: dayrb_add_descriptions
-        
-        (85.9 minutes later)
-        
-        day.rb 0
-        --> Exit Context: dayrb_add_descriptions
-        --> Time: 85.9 minutes
-        
-        day.rb
-        --> Day.rb (1.9.1)
-        --> Today's tasks:
-        --> 
-        --> 0: dayrb_add_descriptions [85.9/60 minutes] [143.2%] (85.9 minutes today)
-        --> 1: matl_quiz_post9 (15 minute estimate)
-        --> 2: matl_hw_ch9 (55 minute estimate)
-        
-* Add a task with description. <br />
+* Clone the repository to your favorite apps folder. (git clone https://github.com/sanarothe/day.git ~/apps)
+* Symlink day.rb into your favorite bin folder. (ln -s ~/apps/day/day.rb ~/bin/day)
+* Chmod it to be executable (chmod +x ~/bin/day)
 
-    (Note that the task description has to be in both quotes AND parenthesis. I'm sorry it's ugly, but getting special characters through the shell and into ARGV is hard.) <br /><br />
-    (Tasks with a description have an asterisk next to their name in the task list.)
+Usage Overview: 
+---------------
 
-        day.rb task_name "(task description)" time_estimate
+    Usage: day.rb <command> [<args>]
 
-* Print out the description for a task
-
-        day.rb info task_number
-
-* Delete a task
-
-        day.rb delete 0
-        
-* Clear fulfillment data on all tasks
-
-        day.rb clear
-
-* Or just one task
-
-        day.rb clear 0
-
+    Commands:
+    (no command)        Prints out task list for the day
+    (nonexisting task)  Creates a new task
+    (existing task)     Start tracking time for named task
+    delete (task)       Remove a task
+    info                Print all descriptions
+    info (task)         Print a specific description
+    clear               Clear fulfillment for all tasks.
+    clear (task)        Clear fulfillment for a specific task.
+    
+    (From 'day.rb help')
+    
+* Use the '-a' flag (with no command) to print out tasks that aren't enabled for the day
 * Jump directly from task to task
-* Stores data by default in ~/.config/day/ -- Edit the constants at top of script to change this.
-
-
+* Stores data by default in ~/.config/day/ -- Edit the constant at top of script to change this.
 
 Copyright 2014 - Cameron Carroll
-License: GNU GPL V3
+
+License: MIT
