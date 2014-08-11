@@ -16,6 +16,9 @@ module Parser
       opts[:operation] = case ARGV.first
       when nil
         :print
+      when "-a", "-A"
+        opts[:all] = true
+        :print
       when "clear", "c"
         :clear
       when "delete", "rm"

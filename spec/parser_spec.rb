@@ -13,6 +13,11 @@ describe Parser do
 				ARGV = []
 				expect(Parser.parse_options(@config)).to eq({:operation => :print})
 			end
+
+			it "should optionally accept -a for 'all'" do
+				ARGV = ["-a"]
+				expect(Parser.parse_options(@config)).to eq({:operation => :print, :all => true})
+			end
 		end
 
 		context "for the clear command" do
