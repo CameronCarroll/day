@@ -9,6 +9,10 @@ module Presenter
 	class << self
 
 		# Prints out task list and current context, if applicable.
+		#
+		# @param tasklist [Hash] Hash of task_name => task_object pairs
+		# @param context [String] Name of current task context
+		# @param time [String] Elapsed time since starting current task.
 		def print_list(tasklist, context, time)
 			if tasklist.empty?
 				print_error_empty
@@ -22,6 +26,9 @@ module Presenter
 
 		# Prints info for a specific task if provided.
 		# If not, prints out every description for tasks that have one.
+		#
+		# @param tasklist [Hash] Hash of task_name => task_object pairs
+		# @param task [String] Name of specific task to print info for.
 		def print_info(tasklist, task)
 			if task
 				task_object = tasklist[task]
@@ -63,12 +70,17 @@ See readme.md for a more detailed overview.
 	  end
 
 	  # Announces task has been deleted and prints its description if applicable.
+	  #
+	  # @param task [String] Name of task to be deleted
+	  # @param description [String] Description of task (optional)
 	  def announce_deletion(task, description)
 	  	puts "Deleted #{task}".color_text
 	  	puts "Description was: #{description}".color_text if description
 	  end
 
 	  # Announces that either a task or all tasks have had fulfillment cleared.
+	  #
+	  # @param task [String] Name of task to be cleared
 	  def announce_clear(task)
 	  	if task
 	  		puts "Cleared fulfillment for #{task}".color_text
@@ -77,9 +89,14 @@ See readme.md for a more detailed overview.
 	  	end
 	  end
 
-	  # Announces a switch to a new task and the amount of time spent on the old one.
+	  # Announces a switch to a new task...
+	  # also prints the amount of time spent on the old one.
+	  #
+	  # @param task [String] Name of task to switch to
+	  # @param old_task [String] Name of current context, before switching
+	  # @param old_time [String] Time spent since starting old_task
 	  def announce_switch(task, old_task, old_time)
-	  	puts "Switching to new task, #{task}"
+	  	puts "Switching to #{task}"
 	  	if old_task && old_time
 	  		puts "(Spent #{convert_time_with_suffix old_time} on #{old_task})"
 	  	end
@@ -87,18 +104,26 @@ See readme.md for a more detailed overview.
 
 	  # Announces that we leave current context, prints out time spent.
 	  # Used when not starting a new task.
+	  #
+	  # @param old_task [String] Name of current context
+	  # @param old_time [String] Time spent since starting old_task
 	  def announce_leave_context(old_task, old_time)
 	  	puts "Stopping tracking for #{old_task}"
 	  	puts "(Spent #{convert_time_with_suffix old_time})"
 	  end
 
 	  # Announces the creation of a new task.
+	  #
+	  # @param task [String] Name of task to be added
 	  def announce_new_task(task)
 	  	puts "Added new task, #{task}"
 	  end
 
 		private
 
+		# Iterate through tasklist, printing index, name, description flag and fulfillment/estimate data.
+		#
+		# @param tasks [Hash] Collection of task_name => task_object pairs
 		def print_task_list(tasks)
 			ii = 0
 			# indexing the hash as an array
@@ -114,6 +139,10 @@ See readme.md for a more detailed overview.
 			end
 		end
 
+		# Print/format fulfillment and estimate data.
+		#
+		# @param fulfillment [Integer] Time spent on task in seconds
+		# @param estimate [Integer] Estimated time for task in seconds
 		def print_fulfillment(fulfillment, estimate)
 			if fulfillment
 				if estimate
@@ -128,15 +157,27 @@ See readme.md for a more detailed overview.
 			end
 	  end
 
+	  # Print task name and description.
+	  #
+	  # @param task_name [String] Name of task
+	  # @param task_object [Task] Task object to print description for
 	  def print_description(task_name, task_object)
 	  	print "Description for #{task_name}: "
 	  	puts task_object.description
 	  end
 
+	  # Print information about the current task.
+	  #
+	  # @param context [String] Name of current task
+	  # @param time [Integer] Time spent on current task in seconds
 	  def print_current_context(context, time)
 	  	puts "Current task: #{context} (#{convert_time_with_suffix(time)})"
 	  end
 
+	  # Convert seconds into a more appropriate amount.
+	  # Hours and days also return the leftover minutes and hours, respectively.
+	  #
+	  # @param seconds [Integer] Time to be converted in seconds.
 	  def convert_time(seconds)
 	  	if seconds < 60
 	  		return ('%1.0f' % seconds)
@@ -153,6 +194,9 @@ See readme.md for a more detailed overview.
 	  	end
 	  end
 
+	  # Formats the results of convert_time into a human-readable string.
+	  #
+	  # @param seconds [Integer] Time to be converted in seconds.
 	  def convert_time_with_suffix(seconds)
 	  	first_result, second_result = convert_time(seconds)
 	    if seconds < 60
@@ -166,10 +210,12 @@ See readme.md for a more detailed overview.
 	    end
 	  end
 
+	  # Print empty-tasklist error.
 	  def print_error_empty()
 	  	puts "The task list is empty!"
 	  end
 
+	  # Print unknown error.
 		def print_error_unknown()
 			puts "Sorry, that command is not known. Try 'help'."
 		end

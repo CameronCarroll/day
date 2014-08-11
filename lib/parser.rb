@@ -10,11 +10,16 @@ require 'abbrev'
 E_NO_SUCH_TASK = "I didn't find any task by that name."
 E_MUST_SPECIFY_TASK = "I need you to specify which task to delete."
 
+# DayRB Parser Module
+#
+# Scans and validates ARGV inputs and builds the opts hash.
+# (Performs argument validation, and checks that a specified task really exists.)
 module Parser
-  @config = nil
-
   class << self
 
+    # Parse ARGV into opts hash
+    #
+    # @param config [Configuration] Entire configuration object, needed for task lookups.
     def parse_options(config)
       opts = {}
       @config = config
@@ -68,6 +73,7 @@ module Parser
 
     private
 
+    # Determine if a non-command argument corresponds to a :switch or a :new task
     def handle_non_command(argument)
       if argument.number? || lookup_task(argument) # then we switch to that task index or name
         :switch
@@ -76,6 +82,8 @@ module Parser
       end
     end
 
+    # Check for ARGV[1] but don't raise error if it doesn't exist.
+    # But if we find a task name/index, we make sure it is valid.
     def check_for_second_argument
       if ARGV[1]
         task = lookup_task(ARGV[1])
@@ -87,6 +95,7 @@ module Parser
       end
     end
 
+    # Checks for second argument, but raises error if it doesn't exist.
     def demand_second_argument
       argument = check_for_second_argument
       if argument
@@ -96,10 +105,14 @@ module Parser
       end
     end
 
+    # Check config data either for a task name or index.
     def lookup_task(name)
       @config.lookup_task(name)
     end
 
+    # Gather remaining options for a new task
+    # Checks for a description (or a mention of EDITOR),
+    # valid days, and a time estimate.
     def handle_new_task(opts)
       ARGV[1..-1].each do |arg|
         if arg =~ /\(.+\)/
@@ -142,6 +155,7 @@ module Parser
       return opts
     end
 
+    # Check a possible valid-day argument against abbreviation list.
     def parse_day_argument(day)
       abbreviations = Abbrev.abbrev(%w{sunday monday tuesday wednesday thursday friday saturday})
       if abbreviations.has_key? day
@@ -150,18 +164,5 @@ module Parser
         raise ArgumentError, "Couldn't parse which days to enable task."
       end
     end
-
-    def parse_day_keys(opts)
-      days = []
-      opts.each do |key, value|
-        continue unless value
-        case key
-        when :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday
-          days << key
-        end
-      end
-      return days
-    end
-
   end
 end

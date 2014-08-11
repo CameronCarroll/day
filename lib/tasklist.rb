@@ -1,13 +1,14 @@
 # DayRB Tasklist Module
 #
-# Responsible for loading tasks.
-# Mainly to manage a list of tasks which are valid today,
-# but also allow us to use the '-a' option.
-#
 # MIT License; See LICENSE file; Cameron Carroll 2014
 
 require_relative 'task'
 
+# DayRB Tasklist Module
+#
+# Responsible for loading tasks.
+# Mainly to manage a list of tasks which are valid today,
+# but also allow us to use the '-a' option.
 class Tasklist
 	attr_reader :all_tasks, :valid_tasks
 
@@ -27,6 +28,8 @@ class Tasklist
 	private
 
 	# Build array of task objects from their DB records.
+	#
+	# @param tasks [Hash] Collection of task_name => task_hash pairs
 	def load_tasks(tasks)
 	  task_objects = {}
 	  unless tasks.empty?
@@ -39,7 +42,3 @@ class Tasklist
 	  return task_objects
 	end
 end
-
-# list = Tasklist.new(config)
-# list.all_tasks => [{name => object}]
-# list.valid_tasks => @all_tasks pruned

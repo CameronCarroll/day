@@ -23,6 +23,8 @@ require 'yaml/dbm'
 class Configuration
   attr_reader :data, :context, :entry_time
 
+  # Load DB data and bootstrap it if empty.
+  #
   # @param db [PSYCH::DBM] database (hash-like) initialized and closed by caller.
   def initialize(db)
     @db = db
@@ -31,16 +33,14 @@ class Configuration
   end
 
   # Interface to save_task which decomposes opts hash.
+  #
   # @param opts [Hash] options hash containing input data
   def new_task(opts)
     save_task(opts[:task], opts[:description], opts[:days], opts[:estimate])
   end
 
-  # These next two might be candidates for private methods,
-  # where we move some of the work currently being handled by list into
-  # the public methods in this file.
-
-  # Set DB records to a new current task context.
+  # Change context to a different task.
+  # (Saves fulfillment for previous task.)
   #
   # @param next_key [String] the name of the task to switch to.
   def switch_to(next_key)
@@ -68,7 +68,10 @@ class Configuration
     end
   end
 
-  # Remove a task from list. Doesn't persist until save_data()
+  # Remove a task from config object data.
+  # (Note that this doesn't persist to the DBM files by itself...
+  # And again, the responsibility for calling save() and closing DB lies
+  # with the consumer of this class.)
   #
   # @param task_key [String] Valid task name to delete.
   def delete(task_key)
@@ -76,7 +79,7 @@ class Configuration
   end
 
   # Reload class objects from config data.
-  # Used during testing.
+  # (Used during testing.)
   def reload()
     @context = @data['context']
     @entry_time = @data['entry_time']
@@ -89,7 +92,7 @@ class Configuration
 
   # Used to verify that a task actually exists and to cross-reference indices to names
   #
-  # @param task [String] can either be a task name or index to reference by
+  # @param task [String] name or index reference to task
   def lookup_task(task)
     if task.number?
       @data['tasks'].keys[task.to_i]

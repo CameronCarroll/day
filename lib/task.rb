@@ -17,6 +17,7 @@ class Task
     @fulfillment = fulfillment
   end
 
+  # Determine whether the task is valid today.
   def valid_today?
     if @valid_days
       today = Time.new.wday #0 is sunday, 6 saturday
