@@ -18,14 +18,13 @@ require_relative 'task'
 #       }
 #   }
 class Configuration
-  attr_reader :data, :tasks, :context, :entry_time
+  attr_reader :data, :context, :entry_time
 
   # @param db [PSYCH::DBM] database (hash-like) initialized and closed by caller.
   def initialize(db)
     @db = db
     @data = @db.to_hash
     bootstrap_db if @data.empty?
-    @tasks = load_tasks
   end
 
   # Interface to save_task which decomposes opts hash.
@@ -76,7 +75,6 @@ class Configuration
   # Reload class objects from config data.
   # Used during testing.
   def reload()
-    @tasks = load_tasks
     @context = @data['context']
     @entry_time = @data['entry_time']
   end
@@ -91,26 +89,13 @@ class Configuration
   # @param task [String] can either be a task name or index to reference by
   def lookup_task(task)
     if task.number?
-      @tasks.keys[task.to_i]
+      @data['tasks'].keys[task.to_i]
     else
-      task if @tasks.has_key? task
+      task if @data['tasks'].has_key? task
     end
   end
 
   private
-
-  # Build array of task objects from their DB records.
-  def load_tasks
-    tasks = {}
-    unless @data['tasks'].empty?
-      @data['tasks'].each do |task_name, task|
-        tasks[task_name] = Task.new(task_name, task['description'], task['active_days'],
-         task['estimate'], task['fulfillment'])
-      end
-    end
-
-    return tasks
-  end
 
   # Add a new task to the DB.
   #

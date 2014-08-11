@@ -6,31 +6,29 @@ module Presenter
 	class << self
 
 		# Prints out task list and current context, if applicable.
-		def print_list(config)
-			if config.tasks.empty?
+		def print_list(tasklist, context, time)
+			if tasklist.empty?
 				print_error_empty
 			else
-				print_task_list(config.tasks)
+				print_task_list(tasklist)
 			end
-			context = config.data['context']
 			if context
-				time = (Time.now - config.data['entry_time'])
 				print_current_context(context, time)
 			end
 		end
 
 		# Prints info for a specific task if provided.
 		# If not, prints out every description for tasks that have one.
-		def print_info(config, task)
+		def print_info(tasklist, task)
 			if task
-				task_object = config.tasks[task]
+				task_object = tasklist[task]
 				if task_object.description
 					print_description task, task_object
 				else
 					puts "There was no description for #{task}."
 				end
 			else
-				config.tasks.each do |task_name, task_object|
+				tasklist.each do |task_name, task_object|
 					print_description task_name, task_object if task_object.description
 				end
 			end
@@ -100,15 +98,15 @@ See readme.md for a more detailed overview.
 
 		def print_task_list(tasks)
 			ii = 0
+			# indexing the hash as an array
+			# task[0] contains key (task name)
+			# task[1] contains task object
 			tasks.each_with_index do |task, ii|
-				name = task.first
-				task = task[1]
-				print ii.to_s.color_index + ': ' + name.color_task
-	      print "*".color_star if task.description && (DESCRIPTION_FLAG == :no_description)
-	      print_fulfillment(task.fulfillment, task.time_estimate)
-	      if task.description && (DESCRIPTION_FLAG == :description)
-	        print_description(task.description)
-	      end
+				task_name = task[0]
+				task_object = task[1]
+				print ii.to_s.color_index + ': ' + task_name.color_task
+	      print "*".color_star if task_object.description
+	      print_fulfillment(task_object.fulfillment, task_object.time_estimate)
 	      puts "\n"
 			end
 		end
@@ -120,7 +118,7 @@ See readme.md for a more detailed overview.
 					print " [#{convert_time(fulfillment)}".color_completion + "/#{convert_time_with_suffix(estimate)}]".color_text
 					print " [#{'%2.1f' % diff}%]".color_completion
 				else
-					print " (#{convert_time_with_suffix(fulfillment)})"
+					print " [#{convert_time_with_suffix(fulfillment)}]"
 				end
 			elsif estimate
 				print " (#{convert_time_with_suffix(estimate)} estimate)"
