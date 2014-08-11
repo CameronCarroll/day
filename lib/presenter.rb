@@ -1,6 +1,9 @@
 # DayRB Presentation Module
+#
 # Handles printouts and error messages.
-# MIT License; Cameron Carroll 2014
+# Also adds colorization as specified in main file.
+#
+# MIT License; See LICENSE file; Cameron Carroll 2014
 
 module Presenter
 	class << self

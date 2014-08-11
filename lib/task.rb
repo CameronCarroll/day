@@ -1,3 +1,10 @@
+# DayRB Task Class
+#
+# Has essentially only one function, which is to perform valid_today? checks.
+# But maybe we'll just keep it and give it more responsibility later.
+#
+# MIT License; See LICENSE file; Cameron Carroll 2014
+
 class Task
 
   attr_reader :name, :valid_days, :description, :time_estimate, :fulfillment

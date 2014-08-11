@@ -1,5 +1,11 @@
+# DayRB Parser Module
+#
+# Parses and validates ARGV.
+# After validation, we can confidently assume a specified task in opts exists.
+#
+# MIT License; See LICENSE file; Cameron Carroll 2014
+
 require 'abbrev'
-require 'pry'
 
 E_NO_SUCH_TASK = "I didn't find any task by that name."
 E_MUST_SPECIFY_TASK = "I need you to specify which task to delete."

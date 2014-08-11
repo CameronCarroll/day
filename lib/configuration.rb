@@ -1,13 +1,16 @@
-require 'yaml/dbm'
-require_relative 'task'
+# DayRB Configuration (Data-Access Layer) Module
+#
+# Provides convenience methods for database access and holds db data.
+# 
+# MIT License; See LICENSE file; Cameron Carroll 2014
 
-# Config class handles access to our config file, which mostly just stores
-# tasks for the moment.
-# We need to be able to load tasks from the config file, add & delete a task.
-# We also want to keep track of the current context and fulfillments.
+require 'yaml/dbm'
+
+# Config class handles access to our config file, which mostly just provides a data-access layer.
 # Schema:
 #   configuration = {
-#       current_context = :task_key,
+#       context = :task_key,
+#       entry_time = :task_start_time
 #       tasks = {
 #         :key => {
 #           :description => (string),
