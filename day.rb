@@ -12,14 +12,16 @@ require_relative 'lib/tasklist'
 require_relative 'lib/parser'
 require_relative 'lib/presenter'
 
-VERSION = '2.0.0'
+require 'fileutils'
+
+VERSION = '2.0.1'
 
 #-------------- User Configuration:
 #-------------- Please DO edit the following to your liking:
 
 # Configuration File: Stores tasks and their data
-#CONFIG_FILE = ENV['HOME'] + '/.config/dayrb/daytodo'
-CONFIG_FILE = ENV['HOME'] + '/code/day/tmp/config'
+CONFIG_DIR = ENV['HOME'] + '/.config/dayrb/'
+CONFIG_FILE = CONFIG_DIR + 'daytodo'
 
 # Colorization: 
 # Use ANSI color codes...
@@ -85,6 +87,8 @@ class String
 end
 
 #-------------- Application Logic:
+
+FileUtils.mkdir_p(CONFIG_DIR) unless Dir.exists? CONFIG_DIR
 
 db = YAML::DBM.new(CONFIG_FILE)
 config = Configuration.new(db)
