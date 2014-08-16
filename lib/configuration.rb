@@ -20,6 +20,9 @@ require 'yaml/dbm'
 #         }
 #       }
 #   }
+
+require 'pry'
+
 class Configuration
   attr_reader :data, :context, :entry_time
 
@@ -83,6 +86,7 @@ class Configuration
   def reload()
     @context = @data['context']
     @entry_time = @data['entry_time']
+
   end
 
   # To be called at the very end of the script to write data back into YAML::DBM

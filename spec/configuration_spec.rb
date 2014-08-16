@@ -12,7 +12,7 @@ describe Configuration do
 		end
 
 		it "bootstraps the DB" do
-			expect(@config.tasks.class).to be(Hash)
+			expect(@config.data['tasks'].class).to be(Hash)
 		end
 	end
 
@@ -24,10 +24,10 @@ describe Configuration do
 		it "adds a task to the database" do
 			test_name = 'test_task_name'
 			opts = {:task => test_name, :description => 'some description'}
-			expect(@config.tasks[test_name]).to be(nil)
+			expect(@config.data['tasks'][test_name]).to be(nil)
 			@config.new_task(opts)
 			@config.reload
-			expect(@config.tasks[test_name].name).to eq(test_name)
+			expect(@config.data['tasks'][test_name]).to be_truthy
 		end
 	end
 
@@ -37,6 +37,7 @@ describe Configuration do
 		end
 
 		it "should enter a new context (no current)" do
+			binding.pry
 			expect(@config.data['context']).to eq(nil)
 			@config.switch_to("test")
 			expect(@config.data['context']).to eq("test")
