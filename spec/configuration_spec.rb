@@ -37,7 +37,6 @@ describe Configuration do
 		end
 
 		it "should enter a new context (no current)" do
-			binding.pry
 			expect(@config.data['context']).to eq(nil)
 			@config.switch_to("test")
 			expect(@config.data['context']).to eq("test")

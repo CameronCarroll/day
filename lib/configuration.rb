@@ -21,8 +21,6 @@ require 'yaml/dbm'
 #       }
 #   }
 
-require 'pry'
-
 class Configuration
   attr_reader :data, :context, :entry_time
 
