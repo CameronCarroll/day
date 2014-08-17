@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
 # DayRB Main File
 # Day.rb is a minimalistic command-line to-do and time-tracking application.
