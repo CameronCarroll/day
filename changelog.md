@@ -1,3 +1,23 @@
+2.0.3 -- 08/17/14
+------------------
+
+* Added gem files to gitignore
+* Pointed spec helper at the correct lib directory (after moving)
+* Removed Rakefile (unused now with gem distribution)
+
+2.0.2 -- 08/17/14
+------------------
+
+### Gem Distribution:
+
+* Now available as a gem! 'gem install dayrb'
+* Reorganized directory structure for gem generation
+
+### Bug Fixes:
+
+* Changed shebang to user /usr/bin/env ruby instead of /usr/bin/ruby.
+* Fixed some spec regressions.
+
 2.0.1 -- 08/12/14
 ------------------
 

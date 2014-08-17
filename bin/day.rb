@@ -14,7 +14,7 @@ require_relative '../lib/day/presenter'
 
 require 'fileutils'
 
-VERSION = '2.0.1'
+VERSION = '2.0.3'
 
 #-------------- User Configuration:
 #-------------- Please DO edit the following to your liking:

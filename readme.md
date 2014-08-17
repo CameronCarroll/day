@@ -1,6 +1,6 @@
 day.rb
 ======
-(Version 2.0.1 -- August 2014)
+(Version 2.0.3 -- August 2014)
 
 A command-line to-do & time-tracking application.
 
@@ -14,17 +14,14 @@ Requirements:
 Installation:
 -------------
 
-### Method 1: Download a Release (One File)
+### Method 1 (Recommended): Install as a Gem
 
-* Head on over to the [Releases Page](https://github.com/sanarothe/day/releases)
-* Download the latest "one-file distributable" version of day.rb
-* Stick it in your favorite bin folder. (~/bin)
-* Chmod it to be executable (chmod +x ~/bin/day.rb)
+* Simply run 'gem install dayrb' and invoke the executable, 'day.rb'
 
 ### Method 2: Clone the Repository (Entire Folder)
 
 * Clone the repository to your favorite apps folder. (git clone https://github.com/sanarothe/day.git ~/apps)
-* Symlink day.rb into your favorite bin folder. (ln -s ~/apps/day/day.rb ~/bin/day)
+* Symlink day.rb into your favorite bin folder. (ln -s ~/apps/day/bin/day.rb ~/bin/day)
 * Chmod it to be executable (chmod +x ~/bin/day)
 
 Usage Overview: 
