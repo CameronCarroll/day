@@ -1,7 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'dayrb'
   s.version     = '2.0.2'
-  s.date        = '08-17-2014'
   s.summary     = "To-do & Time-Tracking CLI App"
   s.description = "Create and track time on tasks via command-line."
   s.authors     = ["Cameron Carroll"]
