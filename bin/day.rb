@@ -7,10 +7,10 @@
 #
 # MIT License; See LICENSE file; Cameron Carroll 2014
 
-require_relative 'configuration'
-require_relative 'tasklist'
-require_relative 'parser'
-require_relative 'presenter'
+require_relative '../lib/day/configuration'
+require_relative '../lib/day/tasklist'
+require_relative '../lib/day/parser'
+require_relative '../lib/day/presenter'
 
 require 'fileutils'
 
