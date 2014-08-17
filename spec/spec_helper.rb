@@ -1,5 +1,5 @@
-require_relative '../lib/configuration'
-require_relative '../lib/parser'
+require_relative '../lib/day/configuration'
+require_relative '../lib/day/parser'
 
 FILE_PATH = 'test_db'
 FULL_FILE_PATH = "#{FILE_PATH}.dir"
