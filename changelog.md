@@ -1,3 +1,10 @@
+2.0.4 -- 03/20/14
+-------------------
+
+* Updated help documentation to be more clear about abbreviated commands and descriptions, and also added some examples.
+* Added confirmation for delete and clear commands.
+* Fixed a problem where switching directly between two tasks didn't save fulfillment data for the first.
+
 2.0.3 -- 08/17/14
 ------------------
 
@@ -117,4 +124,3 @@
 -------------------
 
 * Task list printout will now give progress on current task.
-
