@@ -69,7 +69,7 @@ Tips:
 	Refer to a task either by its name or index.
 	Jump directly between tasks.
 	Include "vim" or your editor constant when creating new task to add a description.
-	
+
 See readme.md for a more detailed overview.
 	    eos
 	  end
@@ -88,21 +88,13 @@ See readme.md for a more detailed overview.
 			puts "It's description was #{description}: (Y/N)" if description
 			case confirmation = get_confirmation
 			when true
-				puts "Deleting '#{task}.'"
+				puts "Deleted #{task}".color_text
+				puts "Description was: #{description}".color_text if description
 			when false
-				puts "Didn't delete '#{task}.'"
+				puts "Didn't delete '#{task}.'".color_text
 			end
 			return confirmation
 		end
-
-	  # Announces task has been deleted and prints its description if applicable.
-	  #
-	  # @param task [String] Name of task to be deleted
-	  # @param description [String] Description of task (optional)
-	  def announce_deletion(task, description)
-	  	puts "Deleted #{task}".color_text
-	  	puts "Description was: #{description}".color_text if description
-	  end
 
 	  # Announces that either a task or all tasks have had fulfillment cleared.
 	  #
