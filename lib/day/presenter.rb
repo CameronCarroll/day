@@ -96,15 +96,28 @@ See readme.md for a more detailed overview.
 			return confirmation
 		end
 
-	  # Announces that either a task or all tasks have had fulfillment cleared.
+	  # Asks the user whether they're sure they want to clear fulfillment.
 	  #
 	  # @param task [String] Name of task to be cleared
-	  def announce_clear(task)
-	  	if task
-	  		puts "Cleared fulfillment for #{task}".color_text
-	  	else
-	  		puts "Cleared fulfillment for all tasks".color_text
-	  	end
+	  def confirm_clear(task)
+			if task
+				puts "Are you sure you want to clear fulfillment for #{task}?"
+			else
+				puts "Are you sure you want to clear all fulfillment data?"
+			end
+			
+			case answer = get_confirmation
+			when true
+		  	if task
+		  		puts "Cleared fulfillment for #{task}".color_text
+		  	else
+		  		puts "Cleared fulfillment for all tasks".color_text
+		  	end
+			when false
+				puts "Didn't clear fulfillment."
+			end
+
+			return answer
 	  end
 
 	  # Announces a switch to a new task...

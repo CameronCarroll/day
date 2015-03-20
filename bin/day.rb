@@ -94,6 +94,7 @@ db = YAML::DBM.new(CONFIG_FILE)
 config = Configuration.new(db)
 opts = Parser.parse_options(config)
 
+# TODO: Simplify following logic, we don't need so many variables.
 # Build task objects and separate into two lists, valid today and all tasks.
 tasklist_object = Tasklist.new(config)
 all_tasks = tasklist_object.all_tasks
@@ -109,6 +110,8 @@ end
 # Easier (named) access to config and opts:
 new_context = opts[:task]
 current_context = config.data['context']
+# If we were already tracking a task when program was called,
+# this refers to the time spent in that task:
 old_time = Time.now - config.data['entry_time'] if config.data['entry_time']
 
 # Take action based on operation:
@@ -128,8 +131,8 @@ when :switch
   Presenter.announce_switch(new_context, current_context, old_time)
   config.switch_to(new_context)
 when :clear
-  Presenter.announce_clear(new_context)
-  config.clear_fulfillment(new_context)
+  confirmation = Presenter.confirm_clear(new_context)
+  config.clear_fulfillment(new_context) if confirmation
 when :leave
   Presenter.announce_leave_context(current_context, old_time)
   config.clear_context
