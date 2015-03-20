@@ -54,12 +54,22 @@ Commands:
   (nonexisting task)  Creates a new task
   (existing task)     Start tracking time for named task.
   delete (task)       Remove a task
+	rm (task)						(Synonym for delete.)
   info                Print all descriptions
   info (task)         Print a specific description
+	i (task)						(Synonym for info.)
   clear               Clear fulfillment for all tasks.
   clear (task)        Clear fulfillment for a specific task.
+	c (task)						(Synonym for clear.)
 
-Refer to a task either by its name or index.
+Flags:
+	-a									Print all tasks, including those not enabled today.
+
+Tips:
+	Refer to a task either by its name or index.
+	Jump directly between tasks.
+	Include "vim" or your editor constant when creating new task to add a description.
+	
 See readme.md for a more detailed overview.
 	    eos
 	  end

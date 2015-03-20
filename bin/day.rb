@@ -5,7 +5,7 @@
 # Created in July 2013
 # See 'day.rb help' for usage.
 #
-# MIT License; See LICENSE file; Cameron Carroll 2014
+# MIT License; See LICENSE file; Cameron Carroll 2015
 
 require_relative '../lib/day/configuration'
 require_relative '../lib/day/tasklist'
@@ -14,7 +14,7 @@ require_relative '../lib/day/presenter'
 
 require 'fileutils'
 
-VERSION = '2.0.3'
+VERSION = '2.0.4'
 
 #-------------- User Configuration:
 #-------------- Please DO edit the following to your liking:
