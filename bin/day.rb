@@ -23,7 +23,7 @@ VERSION = '2.0.3'
 CONFIG_DIR = ENV['HOME'] + '/.config/dayrb/'
 CONFIG_FILE = CONFIG_DIR + 'daytodo'
 
-# Colorization: 
+# Colorization:
 # Use ANSI color codes...
 # (See http://bluesock.org/~willg/dev/ansi.html for codes.)
 # (Change values back to 0 for no colorization.)
@@ -134,8 +134,10 @@ when :leave
   Presenter.announce_leave_context(current_context, old_time)
   config.clear_context
 when :delete
-  Presenter.announce_deletion(new_context, config.data['tasks'][new_context]['description'])
-  config.delete(new_context)
+  confirmation = Presenter.confirm_deletion(new_context, config.data['tasks'][new_context]['description'])
+  if confirmation
+    config.delete(new_context)
+  end
 else
   Presenter.print_error_unknown
 end

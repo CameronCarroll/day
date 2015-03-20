@@ -69,6 +69,22 @@ See readme.md for a more detailed overview.
 	    puts "Day.rb v#{VERSION}"
 	  end
 
+		# Asks whether the user is sure that they want to delete something.
+		#
+		# @param task [String] Name of task
+		# @param description [String] Description of task (optional)
+		def confirm_deletion(task, description)
+			puts "Are you sure you want to delete '#{task}'?: (Y/N)"
+			puts "It's description was #{description}: (Y/N)" if description
+			case confirmation = get_confirmation
+			when true
+				puts "Deleting '#{task}.'"
+			when false
+				puts "Didn't delete '#{task}.'"
+			end
+			return confirmation
+		end
+
 	  # Announces task has been deleted and prints its description if applicable.
 	  #
 	  # @param task [String] Name of task to be deleted
@@ -120,6 +136,20 @@ See readme.md for a more detailed overview.
 	  end
 
 		private
+
+		def get_confirmation
+			loop do
+				print " (Y/N) -->: "
+				case input = $stdin.gets
+				when /y/i, /yes/i
+					return true
+				when /n/i, /no/i
+					return false
+				else
+					p "Sorry, didn't catch that. Try 'yes' or 'no'."
+				end
+			end
+		end
 
 		# Iterate through tasklist, printing index, name, description flag and fulfillment/estimate data.
 		#
