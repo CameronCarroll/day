@@ -1,7 +1,7 @@
 # DayRB Configuration (Data-Access Layer) Module
 #
 # Provides convenience methods for database access and holds db data.
-# 
+#
 # MIT License; See LICENSE file; Cameron Carroll 2014
 
 require 'yaml/dbm'
@@ -45,7 +45,7 @@ class Configuration
   #
   # @param next_key [String] the name of the task to switch to.
   def switch_to(next_key)
-    cap_current_fulfillment if @context
+    cap_current_fulfillment if @data['context']
     @data['context'] = next_key if @data['tasks'].has_key?(next_key)
     @data['entry_time'] = Time.now.getutc
   end
