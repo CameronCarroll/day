@@ -26,45 +26,45 @@ Installation:
 
 Usage Overview:
 ---------------
-Usage: day.rb <command> [<args>]
+    Usage: day.rb <command> [<args>]
 
-Commands:
-(no command)        Prints out task list for the day
-(nonexisting task)  Creates a new task
-(existing task)     Start tracking time for named task.
-delete (task)       Remove a task
-rm (task)						(Synonym for delete.)
-info                Print all descriptions
-info (task)         Print a specific description
-i (task)						(Synonym for info.)
-clear               Clear fulfillment for all tasks.
-clear (task)        Clear fulfillment for a specific task.
-c (task)						(Synonym for clear.)
+    Commands:
+      (no command)        Prints out task list for the day
+      (nonexisting task)  Creates a new task
+      (existing task)     Start tracking time for named task.
+      delete (task)       Remove a task
+      rm (task)           (Synonym for delete.)
+      info                Print all descriptions
+      info (task)         Print a specific description
+      i (task)            (Synonym for info.)
+      clear               Clear fulfillment for all tasks.
+      clear (task)        Clear fulfillment for a specific task.
+      c (task)            (Synonym for clear.)
 
-Flags:
--a									Print all tasks, including those not enabled today.
+    Flags:
+      -a                  Also print tasks not enabled today.
 
-Tips:
-Refer to a task either by its name or index.
-Jump directly between tasks.
-Include "vim" or your editor constant when creating new task to add a description.
-Configuration data is stored at the top of 'day.rb.'
+    Tips:
+      Refer to a task either by its name or index.
+      Jump directly between tasks.
+      Include "vim" or your editor constant when creating new task to add a description.
+      Configuration data is stored at the top of 'day.rb.'
 
 Examples
 --------
-# Create a new task:
-day.rb my_new_task
+    # Create a new task:
+    day.rb my_new_task
 
-# Create task enabled on monday & wednesday, with a 45 minute estimate:
-day.rb my_new_task m w 45
+    # Create task enabled on monday & wednesday, with a 45 minute estimate:
+    day.rb my_new_task m w 45
 
-# Create a task with in-line description:
-# Note parenthesis and quotations are mandatory.
-day.rb my_new_task "(some description)"
+    # Create a task with in-line description:
+    # Note parenthesis and quotations are mandatory.
+    day.rb my_new_task "(some description)"
 
-# Create a task with editor description:
-# Note 'vim' can be changed to any editor atop day.rb file.
-day.rb my_new_task vim
+    # Create a task with editor description:
+    # Note 'vim' can be changed to any editor atop day.rb file.
+    day.rb my_new_task vim
 
 Copyright 2015 - Cameron Carroll
 
