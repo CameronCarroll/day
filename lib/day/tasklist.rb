@@ -14,7 +14,7 @@ class Tasklist
 
 	def initialize(config)
 		@config = config
-		@all_tasks = load_tasks(config.data['tasks'])
+		@all_tasks = load_tasks(config.tasks)
 		today = Time.new.strftime("%A").downcase.to_sym
 		@valid_tasks = @all_tasks.select do |task_name, task_object|
 			if task_object.valid_days

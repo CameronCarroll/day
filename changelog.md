@@ -1,3 +1,9 @@
+2.0.5 -- 09/18/2024
+-------------------
+* Bug fix: Replaced deprecated File.exists? method with .exist?
+* Bug fix: Replaced (seemingly) deprecated yaml/dbm library - using psych directly instead to load config yaml file.
+* Bug fix: Reorganized YAML file bootstrapping code to ensure we always load config data (previously a bootstrap run would not initialize config data class variables)
+
 2.0.4 -- 03/20/14
 -------------------
 
@@ -22,7 +28,7 @@
 
 ### Bug Fixes:
 
-* Changed shebang to user /usr/bin/env ruby instead of /usr/bin/ruby.
+* Changed shebang to use /usr/bin/env ruby instead of /usr/bin/ruby.
 * Fixed some spec regressions.
 
 2.0.1 -- 08/12/14

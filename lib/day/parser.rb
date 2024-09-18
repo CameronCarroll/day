@@ -51,7 +51,7 @@ module Parser
         demand_second_argument
       when :switch
         task = lookup_task(ARGV.first)
-        if task && @config.data['context'] == task
+        if task && @config.context == task
           opts[:operation] = :leave
           nil
         elsif task

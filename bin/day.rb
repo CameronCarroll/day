@@ -2,10 +2,10 @@
 
 # DayRB Main File
 # Day.rb is a minimalistic command-line to-do and time-tracking application.
-# Created in July 2013
+# Created in July 2013, last updated September 2024
 # See 'day.rb help' for usage.
 #
-# MIT License; See LICENSE file; Cameron Carroll 2015
+# MIT License; See LICENSE file; Cam Carroll 2024
 
 require_relative '../lib/day/configuration'
 require_relative '../lib/day/tasklist'
@@ -14,14 +14,14 @@ require_relative '../lib/day/presenter'
 
 require 'fileutils'
 
-VERSION = '2.0.4'
+VERSION = '2.0.5'
 
 #-------------- User Configuration:
 #-------------- Please DO edit the following to your liking:
 
 # Configuration File: Stores tasks and their data
 CONFIG_DIR = ENV['HOME'] + '/.config/dayrb/'
-CONFIG_FILE = CONFIG_DIR + 'daytodo'
+CONFIG_FILE = CONFIG_DIR + 'config_dayrb'
 
 # Colorization:
 # Use ANSI color codes...
@@ -41,6 +41,8 @@ EDITOR = 'vim'
 #--------------
 
 #[CUT HERE] Used in build script. Please don't remove.
+# Note as of September 2024 - I don't remember what the build script was even supposed to do? Or where it is?
+# ?? I published the new version to Rubygems and it seemed to work, so I have no idea.
 
 #-------------- Monkey-Patch Definitions:
 
@@ -87,11 +89,9 @@ class String
 end
 
 #-------------- Application Logic:
+FileUtils.mkdir_p(CONFIG_DIR) unless Dir.exist? CONFIG_DIR
 
-FileUtils.mkdir_p(CONFIG_DIR) unless Dir.exists? CONFIG_DIR
-
-db = YAML::DBM.new(CONFIG_FILE)
-config = Configuration.new(db)
+config = Configuration.new(CONFIG_FILE)
 opts = Parser.parse_options(config)
 
 # TODO: Simplify following logic, we don't need so many variables.
@@ -109,10 +109,10 @@ end
 
 # Easier (named) access to config and opts:
 new_context = opts[:task]
-current_context = config.data['context']
+current_context = config.context
 # If we were already tracking a task when program was called,
 # this refers to the time spent in that task:
-old_time = Time.now - config.data['entry_time'] if config.data['entry_time']
+old_time = Time.now - config.entry_time if config.entry_time
 
 # Take action based on operation:
 case opts[:operation]
@@ -137,7 +137,7 @@ when :leave
   Presenter.announce_leave_context(current_context, old_time)
   config.clear_context
 when :delete
-  confirmation = Presenter.confirm_deletion(new_context, config.data['tasks'][new_context]['description'])
+  confirmation = Presenter.confirm_deletion(new_context, config.tasks[new_context]['description'])
   if confirmation
     config.delete(new_context)
   end
@@ -145,5 +145,4 @@ else
   Presenter.print_error_unknown
 end
 
-config.save
-db.close
+config.save(CONFIG_FILE)

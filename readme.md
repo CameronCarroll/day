@@ -1,6 +1,6 @@
 day.rb
 ======
-(Version 2.0.4 -- March 2015)
+(Version 2.0.5 -- March 2024)
 
 A command-line to-do & time-tracking application.
 
@@ -9,7 +9,7 @@ A command-line to-do & time-tracking application.
 
 Requirements:
 -------------
-* Ruby (Tested with 2.1.2)
+* Ruby (Tested with 3.2.5 in Sept 2024 -- I set minimum ruby version arbitrarily at 3.0 because a lot of stuff needed fixing since the last version from ~2015, I'm not sure what the real minimum version is.)
 
 Installation:
 -------------
@@ -20,7 +20,7 @@ Installation:
 
 ### Method 2: Clone the Repository (Entire Folder)
 
-* Clone the repository to your favorite apps folder. (git clone https://github.com/sanarothe/day.git ~/apps)
+* Clone the repository to your favorite apps folder. (git clone https://github.com/CameronCarroll/day.git ~/apps)
 * Symlink day.rb into your favorite bin folder. (ln -s ~/apps/day/bin/day.rb ~/bin/day)
 * Chmod it to be executable (chmod +x ~/bin/day)
 
@@ -66,6 +66,8 @@ Examples
     # Note 'vim' can be changed to any editor atop day.rb file.
     day.rb my_new_task vim
 
-Copyright 2015 - Cameron Carroll
+
+
+Copyright 2024 - Cam Carroll
 
 License: MIT

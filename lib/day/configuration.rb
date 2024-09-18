@@ -1,10 +1,10 @@
 # DayRB Configuration (Data-Access Layer) Module
 #
-# Provides convenience methods for database access and holds db data.
+# Provides convenience methods for database access and holds config data.
 #
-# MIT License; See LICENSE file; Cameron Carroll 2014
+# MIT License; See LICENSE file; Cameron Carroll 2024
 
-require 'yaml/dbm'
+require 'psych'
 
 # Config class handles access to our config file, which mostly just provides a data-access layer.
 # Schema:
@@ -22,15 +22,26 @@ require 'yaml/dbm'
 #   }
 
 class Configuration
-  attr_reader :data, :context, :entry_time
+  attr_reader :tasks, :context, :entry_time
 
-  # Load DB data and bootstrap it if empty.
+  # Load config data from file -- bootstrap it if empty.
   #
-  # @param db [PSYCH::DBM] database (hash-like) initialized and closed by caller.
-  def initialize(db)
-    @db = db
-    @data = @db.to_hash
-    bootstrap_db if @data.empty?
+  # @param data_file Location of task data file on local drive.
+  def initialize(data_file)
+
+    unless File.exist? data_file
+      bootstrap_db(data_file)
+      puts "day.rb created new config file " + CONFIG_FILE
+    end
+
+    if File.exist? data_file
+      loaded_data = Psych.safe_load_file(data_file, permitted_classes: [Time, Symbol])
+      @context = loaded_data[:context]
+      @entry_time = loaded_data[:entry_time]
+      @tasks = loaded_data[:tasks]
+    else
+      puts "Error creating / loading config file"
+    end
   end
 
   # Interface to save_task which decomposes opts hash.
@@ -45,15 +56,15 @@ class Configuration
   #
   # @param next_key [String] the name of the task to switch to.
   def switch_to(next_key)
-    cap_current_fulfillment if @data['context']
-    @data['context'] = next_key if @data['tasks'].has_key?(next_key)
-    @data['entry_time'] = Time.now.getutc
+    cap_current_fulfillment if @context
+    @context = next_key if @tasks.has_key?(next_key)
+    @entry_time = Time.now.getutc
   end
 
   # Exit context without switching to a new one.
   def clear_context()
     cap_current_fulfillment
-    @data['context'], @data['entry_time'] = nil, nil
+    @context, @entry_time = nil, nil
   end
 
   # Clear fulfillment for one or all tasks.
@@ -63,7 +74,7 @@ class Configuration
     if task
       clear_fulfillment_for task
     else
-      @data['tasks'].each do |task, task_data|
+      @tasks.each do |task, task_data|
         clear_fulfillment_for task
       end
     end
@@ -76,20 +87,26 @@ class Configuration
   #
   # @param task_key [String] Valid task name to delete.
   def delete(task_key)
-    @data['tasks'].delete task_key
+    @tasks.delete task_key
   end
 
   # Reload class objects from config data.
   # (Used during testing.)
   def reload()
-    @context = @data['context']
-    @entry_time = @data['entry_time']
+    @context = @context
+    @entry_time = @entry_time
 
   end
 
-  # To be called at the very end of the script to write data back into YAML::DBM
-  def save()
-    @db.replace(@data)
+  # To be called at the very end of the script to write data back into YAML
+  def save(data_file)
+    data = {
+      context: @context,
+      entry_time: @entry_time,
+      tasks: @tasks }
+    File.open(data_file, 'w') do |file|
+      file.write(Psych.dump(data))
+    end
   end
 
   # Used to verify that a task actually exists and to cross-reference indices to names
@@ -97,9 +114,9 @@ class Configuration
   # @param task [String] name or index reference to task
   def lookup_task(task)
     if task.number?
-      @data['tasks'].keys[task.to_i]
+      @tasks.keys[task.to_i]
     else
-      task if @data['tasks'].has_key? task
+      task if @tasks.has_key? task
     end
   end
 
@@ -113,28 +130,33 @@ class Configuration
   # @param estimate [String] a time estimate in integer minutes.
   def save_task(task, description, valid_days, estimate)
     if task
-      @data['tasks'][task] = {'description' => description, 'valid_days' => valid_days,
+      @tasks[task] = {'description' => description, 'valid_days' => valid_days,
        'estimate' => estimate, 'fulfillment' => nil}
     end
   end
 
   # Builds initial structure for the database file.
-  def bootstrap_db
-    @data['context'] = nil
-    @data['entry_time'] = nil
-    @data['tasks'] = {}
+  def bootstrap_db(data_file)
+    data = {
+      context: nil,
+      entry_time: nil,
+      tasks: {} }
+
+    File.open(data_file, 'w') do |file|
+      file.write(Psych.dump(data))
+    end
   end
 
    # Add the elapsed time since entering a context. (Used when exiting that context.)
   def cap_current_fulfillment
-    @data['tasks'][@data['context']]['fulfillment'] ||= 0
-    @data['tasks'][@data['context']]['fulfillment'] += Time.now - @data['entry_time']
+    @tasks[@context]['fulfillment'] ||= 0
+    @tasks[@context]['fulfillment'] += Time.now - @entry_time
   end
 
   # Actually modify fulfillment data for a task.
   #
   # @param task [String] Valid task name to verify data for.
   def clear_fulfillment_for(task)
-    @data['tasks'][task]['fulfillment'] = nil
+    @tasks[task]['fulfillment'] = nil
   end
 end
