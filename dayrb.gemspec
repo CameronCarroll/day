@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'dayrb'
-  s.version     = '2.0.5'
+  s.version     = '2.0.6'
   s.required_ruby_version = '>= 3.0'
   s.summary     = "To-do & Time-Tracking CLI App"
   s.description = "Create and track time on tasks via command-line."

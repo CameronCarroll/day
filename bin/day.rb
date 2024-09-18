@@ -14,14 +14,14 @@ require_relative '../lib/day/presenter'
 
 require 'fileutils'
 
-VERSION = '2.0.5'
+VERSION = '2.0.6'
 
 #-------------- User Configuration:
 #-------------- Please DO edit the following to your liking:
 
 # Configuration File: Stores tasks and their data
-CONFIG_DIR = ENV['HOME'] + '/.config/dayrb/'
-CONFIG_FILE = CONFIG_DIR + 'config_dayrb'
+CONFIG_DIR = ENV['HOME'] + '/.config/'
+CONFIG_FILE = CONFIG_DIR + 'dayrb_config_file'
 
 # Colorization:
 # Use ANSI color codes...

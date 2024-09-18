@@ -1,4 +1,4 @@
-2.0.5 -- 09/18/2024
+2.0.5 (aka 2.0.6 because I'm dumb) -- 09/18/2024
 -------------------
 * Bug fix: Replaced deprecated File.exists? method with .exist?
 * Bug fix: Replaced (seemingly) deprecated yaml/dbm library - using psych directly instead to load config yaml file.
